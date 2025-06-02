@@ -12,4 +12,5 @@ dependencies:
     - ruff
     - ipykernel
     - openpyxl
+    - pytest
     - --editable .

@@ -2,9 +2,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from eupolis import RAW
-from eupolis.utils import rmv_str_frm_lst, get_time_label
+from eupolis.utils import rmv_str_frm_lst, get_time_label, mean_lst, max_lst, min_lst
 from eupolis.config import COLORS
 from collections import defaultdict
+import numpy as np
 
 from eupolis.radar import radar_factory
 
@@ -32,7 +33,7 @@ df = df.query("location == 'Pileparken 6'")
 dt = defaultdict(lambda: defaultdict(float))
 for item in livability_dct.keys():
     for _, dft in df.groupby("time_day"):
-        dt[_][item] = dft[item].dropna().mean()
+        dt[_][item] = dft[item].dropna()
 
 dt_ord = {}
 dt_ord["Morning"] = dt.pop("Morning")
@@ -61,15 +62,26 @@ for ax, time in zip(axs.flat, dt_ord):
         horizontalalignment="center",
         verticalalignment="center",
     )
-    ax.plot(theta, dt_ord[time].values(), color=COLORS["blue"])
-    ax.fill(
+    ax.plot(
+        theta, [np.mean(item) for item in dt_ord[time].values()], color=COLORS["blue"]
+    )
+    ## ax.fill(
+    ##     theta,
+    ##     dt_ord[time].values(),
+    ##     facecolor=COLORS["blue"],
+    ##     alpha=0.25,
+    ##     label="_nolegend_",
+    ##     closed = False
+    ## )
+    ax.fill_between(
         theta,
-        dt_ord[time].values(),
+        min_lst(dt_ord[time].values()),
+        max_lst(dt_ord[time].values()),
         facecolor=COLORS["blue"],
         alpha=0.25,
-        label="_nolegend_",
+        closed=False,
     )
-    for t, d in zip(theta, dt_ord[time].values()):
+    for t, d in zip(theta, mean_lst(dt_ord[time].values())):
         ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
     ax.set_varlabels(
         dt_ord[time].keys(),

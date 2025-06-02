@@ -47,6 +47,10 @@ def radar_factory(num_vars, frame="circle"):
             """Override fill so that line is closed by default"""
             return super().fill(closed=closed, *args, **kwargs)
 
+        def fill_between(self, *args, closed=True, **kwargs):
+            """Override fill_between so that line is closed by default"""
+            return super().fill_between(closed=closed, *args, **kwargs)
+
         def plot(self, *args, **kwargs):
             """Override plot so that line is closed by default"""
             lines = super().plot(*args, **kwargs)
