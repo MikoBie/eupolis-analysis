@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+from collections.abc import Callable
 
 
 def rmv_str_frm_lst(srs: pd.Series) -> pd.Series:
@@ -36,49 +37,19 @@ def get_time_label(tm: datetime.time) -> str:
             return label
 
 
-def mean_lst(lst: list) -> list[float]:
-    """Computes the mean of nested lists. It returns a list of means for each sublist.
+def process_lst(lst: list, func: Callable[[], float] = lambda x: min) -> list[float]:
+    """Applies the func to each element of the list. It returns a list of values.
 
     Parameters
     ----------
     lst : list
         a list-like object containing sublists of numerical values.
+    func: Callable
+        a function that takes as an argument a list and returns a float.
 
     Returns
     -------
     list[float]
-        a list of means for each sublist in the input list.
+        a list of values that are the result of applying the func to the element.
     """
-    return [sum(sublist) / len(sublist) if not sublist.empty else 0 for sublist in lst]
-
-
-def max_lst(lst: list) -> list[float]:
-    """Computes the max values of nested lists. It returns a list of max values for each sublist.
-
-    Parameters
-    ----------
-    lst : list
-        a list-like object containing sublists of numerical values.
-
-    Returns
-    -------
-    list[float]
-        a list of max values for each sublist in the input list.
-    """
-    return [max(sublist) if not sublist.empty else 0 for sublist in lst]
-
-
-def min_lst(lst: list) -> list[float]:
-    """Computes the min values of nested lists. It returns a list of max values for each sublist.
-
-    Parameters
-    ----------
-    lst : list
-        a list-like object containing sublists of numerical values.
-
-    Returns
-    -------
-    list[float]
-        a list of min values for each sublist in the input list.
-    """
-    return [min(sublist) if not sublist.empty else 0 for sublist in lst]
+    return [func(sublist) if not sublist.empty else 0 for sublist in lst]

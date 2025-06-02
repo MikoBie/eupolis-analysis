@@ -49,7 +49,11 @@ def radar_factory(num_vars, frame="circle"):
 
         def fill_between(self, *args, closed=True, **kwargs):
             """Override fill_between so that line is closed by default"""
-            return super().fill_between(closed=closed, *args, **kwargs)
+            if len(args) and args[0][0] != args[0][-1]:
+                args = list(args)
+            for i, arg in enumerate(args):
+                args[i] = np.append(arg, arg[0])
+            return super().fill_between(*args, **kwargs)
 
         def plot(self, *args, **kwargs):
             """Override plot so that line is closed by default"""

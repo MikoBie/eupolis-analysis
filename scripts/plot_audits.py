@@ -1,8 +1,10 @@
+"""Plot Radar plots from Spatial Audit"""
+
 # %%
 import pandas as pd
 import matplotlib.pyplot as plt
-from eupolis import RAW
-from eupolis.utils import rmv_str_frm_lst, get_time_label, mean_lst, max_lst, min_lst
+from eupolis import RAW, PNG
+from eupolis.utils import rmv_str_frm_lst, get_time_label, process_lst
 from eupolis.config import COLORS
 from collections import defaultdict
 import numpy as np
@@ -12,13 +14,26 @@ from eupolis.radar import radar_factory
 # %%
 df = pd.read_excel(RAW / "audits/euPOLIS_sa_form_all.xlsm", sheet_name="Data")
 livability_dct = {
-    "Multifunctionality": ["multifuncionality"],
-    "Friendliness": ["friendlness"],
-    "Comfort\n of use": ["temperature", "noise"],
-    "Sense of\n safety": ["traffic_safety", "individual_safety"],
+    "Multifunctionality": [
+        "multifuncionality",
+        "interactions",
+        "bike_lanes",
+        "places_interact",
+        "sit",
+        "variety",
+    ],
+    "Friendliness": [
+        "friendlness",
+        "diversity",
+        "interactions",
+        "accessibility",
+        "variety",
+    ],
+    "Comfort\n of use": ["temperature", "noise", "order"],
+    "Sense of\n safety": ["traffic_safety", "individual_safety", "order", "car"],
     "Sense of\n place": ["uniquness"],
     "Contact \nwith nature": ["contact_with_nature", "quality_of_nature"],
-    "Walkability": ["accessibility", "surface", "with_disabilities"],
+    "Walkability": ["accessibility", "surface", "with_disabilities", "pedestrian"],
 }
 
 # %%
@@ -27,7 +42,8 @@ for factor, cols in livability_dct.items():
 
 df["time_day"] = df["time"].map(lambda x: get_time_label(x))
 df["location"] = df["location"].apply(lambda x: x.split(" - ")[0])
-df = df.query("location == 'Pileparken 6'")
+gladsaxe = df.query("location == 'Pileparken 6'")
+df = df.query("location.str.contains('Łódź')", engine="python")
 
 # %%
 dt = defaultdict(lambda: defaultdict(float))
@@ -38,7 +54,7 @@ for item in livability_dct.keys():
 dt_ord = {}
 dt_ord["Morning"] = dt.pop("Morning")
 dt_ord["Afternoon"] = dt.pop("Afternoon")
-dt_ord["Evening"] = dt.pop("Evening")
+## dt_ord["Evening"] = dt.pop("Evening")
 
 # %%
 N = 7
@@ -46,7 +62,10 @@ theta = radar_factory(N, frame="polygon")
 
 
 fig, axs = plt.subplots(
-    figsize=(9, 3), nrows=1, ncols=3, subplot_kw=dict(projection="radar")
+    figsize=(9, 4),
+    nrows=1,
+    ncols=3,
+    subplot_kw=dict(projection="radar"),
 )
 fig.subplots_adjust(wspace=0.5, hspace=0.20, top=0.85, bottom=0.05)
 
@@ -75,13 +94,12 @@ for ax, time in zip(axs.flat, dt_ord):
     ## )
     ax.fill_between(
         theta,
-        min_lst(dt_ord[time].values()),
-        max_lst(dt_ord[time].values()),
+        process_lst(dt_ord[time].values(), min),
+        process_lst(dt_ord[time].values(), max),
         facecolor=COLORS["blue"],
         alpha=0.25,
-        closed=False,
     )
-    for t, d in zip(theta, mean_lst(dt_ord[time].values())):
+    for t, d in zip(theta, process_lst(dt_ord[time].values(), np.mean)):
         ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
     ax.set_varlabels(
         dt_ord[time].keys(),
@@ -98,14 +116,13 @@ labels = ("Before Intervnetion", "After Intervnetion")
 
 fig.text(
     0.5,
-    0.965,
+    0.9,
     "Livability for different times of the day Pileparken 6",
     horizontalalignment="center",
     color="black",
     weight="bold",
     size="large",
 )
-
+plt.savefig(PNG / "gladsaxe.png", dpi=200)
 plt.show()
-
 # %%
