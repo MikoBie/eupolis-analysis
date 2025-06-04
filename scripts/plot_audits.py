@@ -4,9 +4,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from eupolis import RAW, PNG
-from eupolis.utils import rmv_str_frm_lst, get_time_label, process_lst
+from eupolis.utils import rmv_str_frm_lst, get_time_label, process_lst, prepare_data
 from eupolis.config import COLORS, LIVABILITY
-from collections import defaultdict
 import numpy as np
 
 from eupolis.radar import radar_factory
@@ -19,43 +18,11 @@ df["time_day"] = df["time"].map(lambda x: get_time_label(x))
 N = len(LIVABILITY)
 theta = radar_factory(N, frame="polygon")
 
-
 # %%
-def prepare_data(
-    df: pd.DataFrame, location: str, livability: dict = LIVABILITY
-) -> dict:
-    """Prepare data for plotting radar plots. It returns a dictionary where keys are time of the day and values lists of the results.
-
-    Parameters
-    ----------
-    df
-        data frame with Spatial Audits
-    location
-        the name of the city or place. It uses contains so it does not have to be the whole name
-    livability, optional
-        dictionary with livability dimmensions as keys. The values are the names of specific columns, by default LIVABILITY
-
-    Returns
-    -------
-        A dictionary where keys are times of the day and values lists of the results.
-    """
-    df = df.query(f"location.str.contains('{location}')", engine="python")
-    dt = defaultdict(lambda: defaultdict(float))
-    for item in livability.keys():
-        for _, dft in df.groupby("time_day"):
-            dt[_][item] = dft[item].dropna()
-    dt_ord = {}
-    for key in ["Morning", "Afternoon", "Evening"]:
-        if key in dt:
-            dt_ord[key] = dt.pop(key)
-    return dt_ord
-
-
-# %%
-pireus = prepare_data(df=df, location="Akti")
-gladsaxe = prepare_data(df=df, location="Pileparken")
-belgrade = prepare_data(df=df, location="Zemunski")
-lodz = prepare_data(df=df, location="Łódź")
+pireus = prepare_data(df=df, location="Akti", livability=LIVABILITY)
+gladsaxe = prepare_data(df=df, location="Pileparken", livability=LIVABILITY)
+belgrade = prepare_data(df=df, location="Zemunski", livability=LIVABILITY)
+lodz = prepare_data(df=df, location="Łódź", livability=LIVABILITY)
 
 # %%
 dt_ord = pireus
@@ -122,7 +89,8 @@ fig.text(
     size="large",
 )
 plt.savefig(PNG / "akti-dilaveri.png", dpi=200)
-plt.show()
+if __name__ not in "__main__":
+    plt.show()
 # %%
 dt_ord = lodz
 fig, axs = plt.subplots(
@@ -188,7 +156,8 @@ fig.text(
     size="large",
 )
 plt.savefig(PNG / "lodz.png", dpi=200)
-plt.show()
+if __name__ not in "__main__":
+    plt.show()
 
 # %%
 dt_ord = gladsaxe
@@ -255,7 +224,8 @@ fig.text(
     size="large",
 )
 plt.savefig(PNG / "gladsaxe.png", dpi=200)
-plt.show()
+if __name__ not in "__main__":
+    plt.show()
 # %%
 dt_ord = belgrade
 fig, axs = plt.subplots(
@@ -321,5 +291,6 @@ fig.text(
     size="large",
 )
 plt.savefig(PNG / "belgrade.png", dpi=200)
-plt.show()
+if __name__ not in "__main__":
+    plt.show()
 # %%

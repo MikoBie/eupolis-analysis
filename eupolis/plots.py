@@ -23,11 +23,11 @@ def plot_barplot(
         a list with coordinate of the vertical grid, by default [10, 50, 100]
     """
     fig, axs = plt.subplots(figsize=(9, 4), nrows=1, ncols=len(dt_ord))
-    fig.subplots_adjust(wspace=0.3, hspace=0.2, top=0.85, bottom=0.05)
+    fig.subplots_adjust(wspace=0.3, hspace=0.2, top=0.8, bottom=0.05)
     for ax, time in zip(axs.flat, dt_ord):
         y_m = [np.mean(value) for key, value in dt_ord[time].items() if "_m" in key]
         y_f = [-np.mean(value) for key, value in dt_ord[time].items() if "_f" in key]
-        text_x = vertical_lines[0]
+        xlimit = max(abs(min(y_f)), max(y_m))
         x = {
             0: "Children",
             1: "Teenagers",
@@ -50,22 +50,26 @@ def plot_barplot(
             ax.set_yticks([])
         ax.axvline(x=0, color="white")
         ax.text(
-            text_x,
-            y=4.6,
+            x=0.75,
+            y=1,
             s="Men",
             horizontalalignment="center",
             verticalalignment="center",
+            size=8,
+            transform=ax.transAxes,
         )
         ax.text(
-            -text_x,
-            y=4.6,
+            x=0.25,
+            y=1,
             s="Women",
             horizontalalignment="center",
             verticalalignment="center",
+            size=8,
+            transform=ax.transAxes,
         )
         for item in vertical_lines:
             ax.axvline(x=item, linestyle="--", color="darkgrey", linewidth=0.5)
             ax.axvline(x=-item, linestyle="--", color="darkgrey", linewidth=0.5)
-        ax.set_title(time, horizontalalignment="center")
-        ax.set_xlim(min(y_f) - 10, max(y_m) + 10)
+        ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
+        ax.set_xlim(-xlimit - 5, xlimit + 5)
     return fig

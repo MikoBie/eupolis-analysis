@@ -22,3 +22,16 @@ LIVABILITY = {
     "Contact \nwith nature": ["contact_with_nature", "quality_of_nature"],
     "Walkability": ["accessibility", "surface", "with_disabilities", "pedestrian"],
 }
+
+PEOPLE = {
+    "ch_m": ["ch_m"],
+    "ch_f": ["ch_f"],
+    "y_m": ["y_m"],
+    "y_f": ["y_f"],
+    "ya_m": ["ya_m"],
+    "ya_f": ["ya_f"],
+    "ma_m": ["ma_m"],
+    "ma_f": ["ma_f"],
+    "s_m": ["s_m"],
+    "s_f": ["s_f"],
+}
