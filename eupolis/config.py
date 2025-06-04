@@ -20,7 +20,7 @@ LIVABILITY = {
     "Sense of\n safety": ["traffic_safety", "individual_safety", "order", "car"],
     "Sense of\n place": ["uniquness"],
     "Contact \nwith nature": ["contact_with_nature", "quality_of_nature"],
-    "Walkability": ["accessibility", "surface", "with_disabilities", "pedestrian"],
+    "Walkability": ["accessibility", "surface", "pedestrian"],
 }
 
 PEOPLE = {
