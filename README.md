@@ -21,5 +21,3 @@ pre-commit install
 ```
 4. Cross fingers.
 
-## Running
-

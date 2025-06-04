@@ -35,3 +35,15 @@ PEOPLE = {
     "s_m": ["s_m"],
     "s_f": ["s_f"],
 }
+
+GROUPS = {
+    "family": ["family"],
+    "pram": ["pram"],
+    "group": ["group"],
+    "couple": ["couple"],
+    "pet": ["pet"],
+    "with_disabilities": ["with_disabilities"],
+    "non_white": ["non_white"],
+    "bike": ["bike"],
+    "other": ["other"],
+}

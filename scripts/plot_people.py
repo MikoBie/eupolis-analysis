@@ -24,7 +24,7 @@ fig = plot_barplot(
     dt_ord=pireus, ticks=[-50, -25, -10, 0, 10, 25, 50], vertical_lines=[10, 25, 50]
 )
 fig.suptitle(
-    "Cohorts of users for different times of the day Akti Dilaveri",
+    "Age cohorts of users for different times of the day Akti Dilaveri",
     fontsize=12,
     weight="bold",
 )
@@ -43,7 +43,7 @@ fig = plot_barplot(
     ],
 )
 fig.suptitle(
-    "Cohorts of users for different times of the day Pasaż Rynkowskiej",
+    "Age cohorts of users for different times of the day Pasaż Rynkowskiej",
     fontsize=12,
     weight="bold",
 )
@@ -63,7 +63,7 @@ fig = plot_barplot(
     ],
 )
 fig.suptitle(
-    "Cohorts of users for different times of the day Zamunski Key",
+    "Age cohorts of users for different times of the day Zamunski Key",
     fontsize=12,
     weight="bold",
 )
@@ -83,7 +83,7 @@ fig = plot_barplot(
     ],
 )
 fig.suptitle(
-    "Cohorts of users for different times of the day Pileparken 6",
+    "Age cohorts of users for different times of the day Pileparken 6",
     fontsize=12,
     weight="bold",
 )
