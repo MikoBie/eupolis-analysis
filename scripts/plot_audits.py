@@ -90,7 +90,7 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "lodz.png", dpi=200)
+fig.savefig(PNG / "radar_lodz.png", dpi=200)
 for key, value in lodz.items():
     tmp = {key: value}
     fig = plot_radar(dt_ord=tmp, theta=theta)
