@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from eupolis.utils import process_lst
 from eupolis.config import COLORS
 import numpy as np
 
@@ -124,4 +125,80 @@ def plot_groups(dt_ord: dict, colors: dict = COLORS, xlimit: int = 10) -> plt.Fi
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
         ax.set_xlim(0, xlimit)
         ax.set_xticks([i for i in range(0, xlimit + 1, 5)])
+    return fig
+
+
+def plot_radar(dt_ord: dict, theta: np.array, color: dict = COLORS) -> plt.Figure:
+    """Plots radar plots.
+
+    Parameters
+    ----------
+    dt_ord
+        a dictionary where keys are groups and vlaues lists of frequencies
+    colors, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+    theta
+        the result of radar_factory; it an array with coordinates in polar
+
+    Returns
+    -------
+        radar plots
+    """
+    fig, axs = plt.subplots(
+        figsize=(3 * len(dt_ord), 4),
+        nrows=1,
+        ncols=len(dt_ord),
+        subplot_kw=dict(projection="radar"),
+    )
+    fig.subplots_adjust(wspace=0.5, hspace=0.20, top=0.85, bottom=0.05)
+    if len(dt_ord) == 1:
+        axs_flat = [axs]
+    else:
+        axs_flat = axs.flat
+
+    for ax, time in zip(axs_flat, dt_ord):
+        ax.set_rgrids([1, 2, 3, 4, 5], size=0)
+        ax.set_ylim(0, 5)
+        ax.set_title(
+            x=0.5,
+            y=-0.3,
+            label=time,
+            weight="bold",
+            size="medium",
+            horizontalalignment="center",
+            verticalalignment="center",
+        )
+        ax.plot(
+            theta,
+            [np.mean(item) for item in dt_ord[time].values()],
+            color=COLORS["blue"],
+        )
+        ## ax.fill(
+        ##     theta,
+        ##     dt_ord[time].values(),
+        ##     facecolor=COLORS["blue"],
+        ##     alpha=0.25,
+        ##     label="_nolegend_",
+        ##     closed = False
+        ## )
+        ax.fill_between(
+            theta,
+            process_lst(dt_ord[time].values(), min),
+            process_lst(dt_ord[time].values(), max),
+            facecolor=COLORS["blue"],
+            alpha=0.25,
+        )
+        for t, d in zip(theta, process_lst(dt_ord[time].values(), np.mean)):
+            ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
+        ax.set_varlabels(
+            dt_ord[time].keys(),
+            kwargs={
+                "fontsize": 6,
+                "verticalalignment": "center",
+                "horizontalalignment": "center",
+            },
+        )
+        for label in ax.get_xticklabels():
+            if label.get_text() == "Multifunctionality":
+                label.set_position([0, 0.12])
     return fig

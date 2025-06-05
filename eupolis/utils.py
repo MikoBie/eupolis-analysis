@@ -82,3 +82,67 @@ def prepare_data(df: pd.DataFrame, location: str, livability: dict) -> dict:
         if key in dt:
             dt_ord[key] = dt.pop(key)
     return dt_ord
+
+
+def share_replace(share_value: float) -> float:
+    """Rescale share_cars and share_nature to scale from 1 to 5.
+
+    Parameters
+    ----------
+    share_value
+        the value, it should be a float
+
+    Returns
+    -------
+        a flaot from 1.0 to 5.0
+    """
+    dct = {1: 5, 0.7: 4, 0.5: 3, 0.3: 2, 0.1: 1}
+    result = share_value
+    for key, value in dct.items():
+        if share_value <= key:
+            result = value
+    return result
+
+
+def count_proportion(srs: pd.Series, cutoff: int = 1) -> float:
+    """Compute the proportion of elements bigger than cutoff.
+
+    Parameters
+    ----------
+    srs
+        a series of numeric values
+    cutoff, optional
+        a value above each the element is counted as present, by default 1
+
+    Returns
+    -------
+        a proportion of present elements
+    """
+    return pd.Series([1 if item > cutoff else 0 for item in srs]).mean()
+
+
+def rescale_number(
+    value: float, original_min: int, original_max: int, new_min: int, new_max: int
+) -> float:
+    """Rescales the variable for a given range.
+
+    Parameters
+    ----------
+    value
+        value to rescale
+    original_min
+        the minimum of the original scale
+    original_max
+        the maximum of the original scale
+    new_min
+        the new minimum
+    new_max
+        the new maximum
+
+    Returns
+    -------
+        Rescaled value such as new_min is the minimum of the scale and new_max is the maximum.
+    """
+    return ((value - original_min) / (original_max - original_min)) * (
+        new_max - new_min
+    ) + new_min

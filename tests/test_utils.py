@@ -1,5 +1,12 @@
 import pytest
-from eupolis.utils import rmv_str_frm_lst, get_time_label, process_lst
+from eupolis.utils import (
+    rmv_str_frm_lst,
+    get_time_label,
+    process_lst,
+    share_replace,
+    count_proportion,
+    rescale_number,
+)
 import pandas as pd
 import numpy as np
 import datetime
@@ -55,3 +62,53 @@ def test_process_lst(lst: list) -> None:
     result = process_lst(lst, func=np.mean)
     assert isinstance(result, list)
     assert result == [np.mean(item) if not item.empty else 0 for item in lst]
+
+
+@pytest.mark.parametrize(
+    "flt",
+    [
+        (0.1, 1),
+        (0.3, 2),
+        (0.5, 3),
+        (0.7, 4),
+        (0.8, 5),
+        (np.nan, np.nan),
+    ],
+)
+def test_share_replace(flt: float) -> None:
+    value, output = flt
+    result = share_replace(value)
+    if not np.isnan(result):
+        assert isinstance(result, int)
+        assert result > 0.9 and result < 5.1
+        assert result == output
+    else:
+        assert result != output
+
+
+@pytest.mark.parametrize(
+    "tpl",
+    [
+        (pd.Series([np.nan]), 0),
+        (pd.Series([np.nan, 1, 2, 3, 4]), np.mean([0, 0, 1, 1, 1])),
+        (pd.Series([np.nan, 1, 2, 3, 1]), np.mean([0, 0, 1, 1, 0])),
+    ],
+)
+def test_count_proportion(tpl: tuple) -> None:
+    srs, output = tpl
+    result = count_proportion(srs)
+    assert isinstance(result, float)
+    assert result == output
+
+
+@pytest.mark.parametrize(
+    "tpl",
+    [(0, 1), (1, 5), (0.5, 3)],
+)
+def test_rescale_number(tpl: tuple) -> None:
+    old, new = tpl
+    result = rescale_number(
+        value=old, original_min=0, original_max=1, new_min=1, new_max=5
+    )
+    assert isinstance(result, float)
+    assert result == new

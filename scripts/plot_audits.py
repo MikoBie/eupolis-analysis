@@ -2,16 +2,38 @@
 
 # %%
 import pandas as pd
-import matplotlib.pyplot as plt
 from eupolis import RAW, PNG
-from eupolis.utils import rmv_str_frm_lst, get_time_label, process_lst, prepare_data
-from eupolis.config import COLORS, LIVABILITY
-import numpy as np
+from eupolis.utils import (
+    rmv_str_frm_lst,
+    get_time_label,
+    prepare_data,
+    share_replace,
+    count_proportion,
+    rescale_number,
+)
+from eupolis.plots import plot_radar
+from eupolis.config import LIVABILITY
+from collections import defaultdict
 
 from eupolis.radar import radar_factory
 
 # %%
+
+# %%
 df = pd.read_excel(RAW / "audits/euPOLIS_sa_form_all.xlsm", sheet_name="Data")
+df["share_nature"] = df["share_nature"].apply(lambda x: share_replace(x))
+df["share_cars"] = df["share_cars"].apply(lambda x: 6 - share_replace(x))
+df["multifunctionality_intensity"] = df.iloc[:, [i for i in range(5, 23)]].apply(
+    lambda x: count_proportion(x), axis=1
+)
+df["multifunctionality_intensity"] = df["multifunctionality_intensity"].map(
+    lambda x: rescale_number(
+        value=x, original_min=0, original_max=1, new_min=1, new_max=5
+    )
+)
+
+# %%
+
 for factor, cols in LIVABILITY.items():
     df[factor] = df[cols].apply(lambda x: rmv_str_frm_lst(x).mean(), axis=1)
 df["time_day"] = df["time"].map(lambda x: get_time_label(x))
@@ -25,272 +47,120 @@ belgrade = prepare_data(df=df, location="Zemunski", livability=LIVABILITY)
 lodz = prepare_data(df=df, location="Łódź", livability=LIVABILITY)
 
 # %%
-dt_ord = pireus
-fig, axs = plt.subplots(
-    figsize=(9, 4),
-    nrows=1,
-    ncols=len(dt_ord),
-    subplot_kw=dict(projection="radar"),
-)
-fig.subplots_adjust(wspace=0.5, hspace=0.20, top=0.85, bottom=0.05)
+fig = plot_radar(dt_ord=pireus, theta=theta)
 
-# Plot the four cases from the example data on separate Axes
-for ax, time in zip(axs.flat, dt_ord):
-    ax.set_rgrids([1, 2, 3, 4, 5], size=0)
-    ax.set_ylim(0, 5)
-    ax.set_title(
-        time,
-        weight="bold",
-        size="medium",
-        position=(0.5, 1),
-        horizontalalignment="center",
-        verticalalignment="center",
-    )
-    ax.plot(
-        theta, [np.mean(item) for item in dt_ord[time].values()], color=COLORS["blue"]
-    )
-    ## ax.fill(
-    ##     theta,
-    ##     dt_ord[time].values(),
-    ##     facecolor=COLORS["blue"],
-    ##     alpha=0.25,
-    ##     label="_nolegend_",
-    ##     closed = False
-    ## )
-    ax.fill_between(
-        theta,
-        process_lst(dt_ord[time].values(), min),
-        process_lst(dt_ord[time].values(), max),
-        facecolor=COLORS["blue"],
-        alpha=0.25,
-    )
-    for t, d in zip(theta, process_lst(dt_ord[time].values(), np.mean)):
-        ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
-    ax.set_varlabels(
-        dt_ord[time].keys(),
-        kwargs={
-            "fontsize": 6,
-            "verticalalignment": "center",
-            "horizontalalignment": "center",
-        },
-    )
-
-# add legend relative to top-left plot
-labels = ("Before Intervnetion", "After Intervnetion")
-# legend = axs[0].legend(labels, loc=(-0.3, 1.4), labelspacing=0.1, fontsize="small")
-
-fig.text(
-    0.5,
-    0.9,
-    "Livability for different times of the day Akti Dilaveri",
+fig.suptitle(
+    t="Livability for different times of the day Akti Dilaveri",
     horizontalalignment="center",
+    y=0.85,
     color="black",
     weight="bold",
     size="large",
 )
-plt.savefig(PNG / "akti-dilaveri.png", dpi=200)
-if __name__ not in "__main__":
-    plt.show()
-# %%
-dt_ord = lodz
-fig, axs = plt.subplots(
-    figsize=(9, 4),
-    nrows=1,
-    ncols=len(dt_ord),
-    subplot_kw=dict(projection="radar"),
-)
-fig.subplots_adjust(wspace=0.5, hspace=0.20, top=0.8, bottom=0.05)
-
-# Plot the four cases from the example data on separate Axes
-for ax, time in zip(axs.flat, dt_ord):
-    ax.set_rgrids([1, 2, 3, 4, 5], size=0)
-    ax.set_ylim(0, 5)
-    ax.set_title(
-        time,
-        weight="bold",
-        size="medium",
-        position=(0.5, 1),
-        horizontalalignment="center",
-        verticalalignment="center",
-    )
-    ax.plot(
-        theta, [np.mean(item) for item in dt_ord[time].values()], color=COLORS["blue"]
-    )
-    ## ax.fill(
-    ##     theta,
-    ##     dt_ord[time].values(),
-    ##     facecolor=COLORS["blue"],
-    ##     alpha=0.25,
-    ##     label="_nolegend_",
-    ##     closed = False
-    ## )
-    ax.fill_between(
-        theta,
-        process_lst(dt_ord[time].values(), min),
-        process_lst(dt_ord[time].values(), max),
-        facecolor=COLORS["blue"],
-        alpha=0.25,
-    )
-    for t, d in zip(theta, process_lst(dt_ord[time].values(), np.mean)):
-        ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
-    ax.set_varlabels(
-        dt_ord[time].keys(),
-        kwargs={
-            "fontsize": 6,
-            "verticalalignment": "center",
-            "horizontalalignment": "center",
-        },
+fig.tight_layout()
+fig.savefig(PNG / "radar_akti-dilaveri.png", dpi=200)
+for key, value in pireus.items():
+    tmp = {key: value}
+    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig.tight_layout()
+    fig.savefig(
+        PNG / f"radar_akti-dilaveri_{key.lower()}.png", dpi=200, transparent=True
     )
 
-# add legend relative to top-left plot
-labels = ("Before Intervnetion", "After Intervnetion")
-# legend = axs[0].legend(labels, loc=(-0.3, 1.4), labelspacing=0.1, fontsize="small")
+pireus_all = defaultdict(defaultdict)
+for factor in LIVABILITY:
+    pireus_all[""][factor] = pd.Series(
+        [pireus[time_day][factor].mean() for time_day in pireus]
+    )
 
-fig.text(
-    0.5,
-    0.9,
-    "Livability for different times of the day Pasaż Rynkowskiej",
-    horizontalalignment="center",
-    color="black",
-    weight="bold",
-    size="large",
-)
-plt.savefig(PNG / "lodz.png", dpi=200)
-if __name__ not in "__main__":
-    plt.show()
+fig = plot_radar(dt_ord=pireus_all, theta=theta)
+fig.tight_layout()
+fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200)
+
 
 # %%
-dt_ord = gladsaxe
-fig, axs = plt.subplots(
-    figsize=(9, 4),
-    nrows=1,
-    ncols=len(dt_ord),
-    subplot_kw=dict(projection="radar"),
-)
-fig.subplots_adjust(wspace=0.5, hspace=0.20, top=0.85, bottom=0.05)
+fig = plot_radar(dt_ord=lodz, theta=theta)
 
-# Plot the four cases from the example data on separate Axes
-for ax, time in zip(axs.flat, dt_ord):
-    ax.set_rgrids([1, 2, 3, 4, 5], size=0)
-    ax.set_ylim(0, 5)
-    ax.set_title(
-        time,
-        weight="bold",
-        size="medium",
-        position=(0.5, 1),
-        horizontalalignment="center",
-        verticalalignment="center",
-    )
-    ax.plot(
-        theta, [np.mean(item) for item in dt_ord[time].values()], color=COLORS["blue"]
-    )
-    ## ax.fill(
-    ##     theta,
-    ##     dt_ord[time].values(),
-    ##     facecolor=COLORS["blue"],
-    ##     alpha=0.25,
-    ##     label="_nolegend_",
-    ##     closed = False
-    ## )
-    ax.fill_between(
-        theta,
-        process_lst(dt_ord[time].values(), min),
-        process_lst(dt_ord[time].values(), max),
-        facecolor=COLORS["blue"],
-        alpha=0.25,
-    )
-    for t, d in zip(theta, process_lst(dt_ord[time].values(), np.mean)):
-        ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
-    ax.set_varlabels(
-        dt_ord[time].keys(),
-        kwargs={
-            "fontsize": 6,
-            "verticalalignment": "center",
-            "horizontalalignment": "center",
-        },
-    )
-
-# add legend relative to top-left plot
-labels = ("Before Intervnetion", "After Intervnetion")
-# legend = axs[0].legend(labels, loc=(-0.3, 1.4), labelspacing=0.1, fontsize="small")
-
-fig.text(
-    0.5,
-    0.9,
-    "Livability for different times of the day Pileparken 6",
+fig.suptitle(
+    t="Livability for different times of the day Pasaż Rynkowskiej",
     horizontalalignment="center",
+    y=0.85,
     color="black",
     weight="bold",
     size="large",
 )
-plt.savefig(PNG / "gladsaxe.png", dpi=200)
-if __name__ not in "__main__":
-    plt.show()
+fig.tight_layout()
+fig.savefig(PNG / "lodz.png", dpi=200)
+for key, value in lodz.items():
+    tmp = {key: value}
+    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig.tight_layout()
+    fig.savefig(PNG / f"radar_lodz_{key.lower()}.png", dpi=200, transparent=True)
+
+lodz_all = defaultdict(defaultdict)
+for factor in LIVABILITY:
+    lodz_all[""][factor] = pd.Series(
+        [lodz[time_day][factor].mean() for time_day in lodz]
+    )
+
+fig = plot_radar(dt_ord=lodz_all, theta=theta)
+fig.tight_layout()
+fig.savefig(PNG / "radar_daily_lodz.png", dpi=200)
 # %%
-dt_ord = belgrade
-fig, axs = plt.subplots(
-    figsize=(9, 4),
-    nrows=1,
-    ncols=len(dt_ord),
-    subplot_kw=dict(projection="radar"),
-)
-fig.subplots_adjust(wspace=0.5, hspace=0.20, top=0.85, bottom=0.05)
+fig = plot_radar(dt_ord=belgrade, theta=theta)
 
-# Plot the four cases from the example data on separate Axes
-for ax, time in zip(axs.flat, dt_ord):
-    ax.set_rgrids([1, 2, 3, 4, 5], size=0)
-    ax.set_ylim(0, 5)
-    ax.set_title(
-        time,
-        weight="bold",
-        size="medium",
-        position=(0.5, 1),
-        horizontalalignment="center",
-        verticalalignment="center",
-    )
-    ax.plot(
-        theta, [np.mean(item) for item in dt_ord[time].values()], color=COLORS["blue"]
-    )
-    ## ax.fill(
-    ##     theta,
-    ##     dt_ord[time].values(),
-    ##     facecolor=COLORS["blue"],
-    ##     alpha=0.25,
-    ##     label="_nolegend_",
-    ##     closed = False
-    ## )
-    ax.fill_between(
-        theta,
-        process_lst(dt_ord[time].values(), min),
-        process_lst(dt_ord[time].values(), max),
-        facecolor=COLORS["blue"],
-        alpha=0.25,
-    )
-    for t, d in zip(theta, process_lst(dt_ord[time].values(), np.mean)):
-        ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
-    ax.set_varlabels(
-        dt_ord[time].keys(),
-        kwargs={
-            "fontsize": 6,
-            "verticalalignment": "center",
-            "horizontalalignment": "center",
-        },
-    )
-
-# add legend relative to top-left plot
-labels = ("Before Intervnetion", "After Intervnetion")
-# legend = axs[0].legend(labels, loc=(-0.3, 1.4), labelspacing=0.1, fontsize="small")
-
-fig.text(
-    0.5,
-    0.9,
-    "Livability for different times of the day Zemunski Kej",
+fig.suptitle(
+    t="Livability for different times of the day Zamunski Kej",
     horizontalalignment="center",
+    y=0.85,
     color="black",
     weight="bold",
     size="large",
 )
-plt.savefig(PNG / "belgrade.png", dpi=200)
-if __name__ not in "__main__":
-    plt.show()
+fig.tight_layout()
+fig.savefig(PNG / "radar_belgrade.png", dpi=200)
+for key, value in belgrade.items():
+    tmp = {key: value}
+    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig.tight_layout()
+    fig.savefig(PNG / f"radar_belgrade_{key.lower()}.png", dpi=200, transparent=True)
+
+belgrade_all = defaultdict(defaultdict)
+for factor in LIVABILITY:
+    belgrade_all[""][factor] = pd.Series(
+        [belgrade[time_day][factor].mean() for time_day in belgrade]
+    )
+
+fig = plot_radar(dt_ord=belgrade_all, theta=theta)
+fig.tight_layout()
+fig.savefig(PNG / "radar_daily_belgrade.png", dpi=200)
+# %%
+fig = plot_radar(dt_ord=gladsaxe, theta=theta)
+
+fig.suptitle(
+    t="Livability for different times of the day Pileparken 6",
+    horizontalalignment="center",
+    y=0.85,
+    color="black",
+    weight="bold",
+    size="large",
+)
+fig.tight_layout()
+fig.savefig(PNG / "radar_gladsaxe.png", dpi=200)
+
+for key, value in gladsaxe.items():
+    tmp = {key: value}
+    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig.tight_layout()
+    fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}.png", dpi=200, transparent=True)
+
+gladsaxe_all = defaultdict(defaultdict)
+for factor in LIVABILITY:
+    gladsaxe_all[""][factor] = pd.Series(
+        [gladsaxe[time_day][factor].mean() for time_day in gladsaxe]
+    )
+
+fig = plot_radar(dt_ord=gladsaxe_all, theta=theta)
+fig.tight_layout()
+fig.savefig(PNG / "radar_daily_gladsaxe.png", dpi=200)
 # %%
