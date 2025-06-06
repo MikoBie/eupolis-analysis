@@ -27,9 +27,13 @@ def plot_barplot(
     -------
         barplots for different age cohorts
     """
-    fig, axs = plt.subplots(figsize=(9, 4), nrows=1, ncols=len(dt_ord))
+    fig, axs = plt.subplots(figsize=(3 * len(dt_ord), 4), nrows=1, ncols=len(dt_ord))
     fig.subplots_adjust(wspace=0.3, hspace=0.2, top=0.8, bottom=0.05)
-    for ax, time in zip(axs.flat, dt_ord):
+    if len(dt_ord) == 1:
+        axs_flat = [axs]
+    else:
+        axs_flat = axs.flat
+    for ax, time in zip(axs_flat, dt_ord):
         y_m = [np.mean(value) for key, value in dt_ord[time].items() if "_m" in key]
         y_f = [-np.mean(value) for key, value in dt_ord[time].items() if "_f" in key]
         xlimit = max(abs(min(y_f)), max(y_m))
@@ -77,6 +81,9 @@ def plot_barplot(
             ax.axvline(x=-item, linestyle="--", color="darkgrey", linewidth=0.5)
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
         ax.set_xlim(-xlimit - 5, xlimit + 5)
+        for label in ax.get_xticklabels():
+            if value := float(label.get_text()) < 0:
+                label.set_text(abs(value))
     return fig
 
 
@@ -97,9 +104,13 @@ def plot_groups(dt_ord: dict, colors: dict = COLORS, xlimit: int = 10) -> plt.Fi
     barplots for times of the day
     """
 
-    fig, axs = plt.subplots(figsize=(9, 4), nrows=1, ncols=len(dt_ord))
+    fig, axs = plt.subplots(figsize=(3 * len(dt_ord), 4), nrows=1, ncols=len(dt_ord))
     fig.subplots_adjust(wspace=0.3, hspace=0.2, top=0.8, bottom=0.05)
-    for ax, time in zip(axs.flat, dt_ord):
+    if len(dt_ord) == 1:
+        axs_flat = [axs]
+    else:
+        axs_flat = axs.flat
+    for ax, time in zip(axs_flat, dt_ord):
         map_groups = {
             "family": "Family",
             "pram": "Person with children's pram",
@@ -124,7 +135,9 @@ def plot_groups(dt_ord: dict, colors: dict = COLORS, xlimit: int = 10) -> plt.Fi
         ax.barh(dct.keys(), dct.values(), color=colors["blue"])
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
         ax.set_xlim(0, xlimit)
-        ax.set_xticks([i for i in range(0, xlimit + 1, 5)])
+        for label in ax.get_xticklabels():
+            if value := float(label.get_text()) < 0:
+                label.set_text(abs(value))
     return fig
 
 
