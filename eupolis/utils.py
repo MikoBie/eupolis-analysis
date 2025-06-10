@@ -56,7 +56,13 @@ def process_lst(lst: list, func: Callable[[], float] = lambda x: min) -> list[fl
     return [func(sublist) if not sublist.empty else 0 for sublist in lst]
 
 
-def prepare_data(df: pd.DataFrame, location: str, livability: dict) -> dict:
+def prepare_data(
+    df: pd.DataFrame,
+    location: str,
+    livability: dict,
+    after: pd.Timestamp = pd.Timestamp(2020, 1, 1),
+    comparison: bool = False,
+) -> dict:
     """Prepare data for plotting radar plots. It returns a dictionary where keys are time of the day and values lists of the results.
 
     Parameters
@@ -72,11 +78,22 @@ def prepare_data(df: pd.DataFrame, location: str, livability: dict) -> dict:
     -------
         A dictionary where keys are times of the day and values lists of the results.
     """
+    group_by = ["time_day"]
+    if comparison:
+        df["comparison"] = df["date"].apply(
+            lambda x: "before" if x < after else "after"
+        )
+        group_by += ["comparison"]
     df = df.query(f"location.str.contains('{location}')", engine="python")
-    dt = defaultdict(lambda: defaultdict(float))
+
+    dt = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
     for item in livability.keys():
-        for _, dft in df.groupby("time_day"):
-            dt[_][item] = dft[item].dropna()
+        for _, dft in df.groupby(group_by):
+            if comparison:
+                dt[_[0]][_[1]][item] = dft[item].dropna()
+            else:
+                dt[_[0]]["before"][item] = dft[item].dropna()
+
     dt_ord = {}
     for key in ["Morning", "Afternoon", "Evening"]:
         if key in dt:

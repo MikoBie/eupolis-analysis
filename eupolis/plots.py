@@ -181,36 +181,65 @@ def plot_radar(dt_ord: dict, theta: np.array, color: dict = COLORS) -> plt.Figur
             horizontalalignment="center",
             verticalalignment="center",
         )
-        ax.plot(
-            theta,
-            [np.mean(item) for item in dt_ord[time].values()],
-            color=COLORS["blue"],
-        )
-        ## ax.fill(
-        ##     theta,
-        ##     dt_ord[time].values(),
-        ##     facecolor=COLORS["blue"],
-        ##     alpha=0.25,
-        ##     label="_nolegend_",
-        ##     closed = False
-        ## )
-        ax.fill_between(
-            theta,
-            process_lst(dt_ord[time].values(), min),
-            process_lst(dt_ord[time].values(), max),
-            facecolor=COLORS["blue"],
-            alpha=0.25,
-        )
-        for t, d in zip(theta, process_lst(dt_ord[time].values(), np.mean)):
-            ax.text(t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6)
-        ax.set_varlabels(
-            dt_ord[time].keys(),
-            kwargs={
-                "fontsize": 6,
-                "verticalalignment": "center",
-                "horizontalalignment": "center",
-            },
-        )
+        if len(dt_ord[time].keys()) < 2:
+            ax.plot(
+                theta,
+                [np.mean(item) for item in dt_ord[time]["before"].values()],
+                color=COLORS["blue"],
+            )
+            ax.fill_between(
+                theta,
+                process_lst(dt_ord[time]["before"].values(), min),
+                process_lst(dt_ord[time]["before"].values(), max),
+                facecolor=COLORS["blue"],
+                alpha=0.25,
+            )
+            for t, d in zip(
+                theta, process_lst(dt_ord[time]["before"].values(), np.mean)
+            ):
+                ax.text(
+                    t, d + 0.3, f"{d:.1f}", horizontalalignment="center", fontsize=6
+                )
+            ax.set_varlabels(
+                dt_ord[time]["before"].keys(),
+                kwargs={
+                    "fontsize": 6,
+                    "verticalalignment": "center",
+                    "horizontalalignment": "center",
+                },
+            )
+        else:
+            ax.plot(
+                theta,
+                [np.mean(item) for item in dt_ord[time]["before"].values()],
+                color=COLORS["blue"],
+            )
+            ax.plot(
+                theta,
+                [np.mean(item) for item in dt_ord[time]["after"].values()],
+                color=COLORS["green"],
+            )
+
+            for t, b, a in zip(
+                theta,
+                process_lst(dt_ord[time]["before"].values(), np.mean),
+                process_lst(dt_ord[time]["after"].values(), np.mean),
+            ):
+                ax.text(
+                    t,
+                    max(a, b) + 0.3,
+                    f"{a - b:.1f}",
+                    horizontalalignment="center",
+                    fontsize=6,
+                )
+            ax.set_varlabels(
+                dt_ord[time]["before"].keys(),
+                kwargs={
+                    "fontsize": 6,
+                    "verticalalignment": "center",
+                    "horizontalalignment": "center",
+                },
+            )
         for label in ax.get_xticklabels():
             if label.get_text() == "Multifunctionality":
                 label.set_position([0, 0.12])

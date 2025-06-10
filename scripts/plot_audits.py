@@ -31,7 +31,6 @@ df["multifunctionality_intensity"] = df["multifunctionality_intensity"].map(
         value=x, original_min=0, original_max=1, new_min=1, new_max=5
     )
 )
-
 # %%
 
 for factor, cols in LIVABILITY.items():
@@ -42,7 +41,13 @@ theta = radar_factory(N, frame="polygon")
 
 # %%
 pireus = prepare_data(df=df, location="Akti", livability=LIVABILITY)
-gladsaxe = prepare_data(df=df, location="Pileparken", livability=LIVABILITY)
+gladsaxe = prepare_data(
+    df=df,
+    location="Pileparken",
+    livability=LIVABILITY,
+    comparison=True,
+    after=pd.Timestamp(2025, 5, 1),
+)
 belgrade = prepare_data(df=df, location="Zemunski", livability=LIVABILITY)
 lodz = prepare_data(df=df, location="Łódź", livability=LIVABILITY)
 
@@ -67,10 +72,10 @@ for key, value in pireus.items():
         PNG / f"radar_akti-dilaveri_{key.lower()}.png", dpi=200, transparent=True
     )
 
-pireus_all = defaultdict(defaultdict)
+pireus_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
-    pireus_all[""][factor] = pd.Series(
-        [pireus[time_day][factor].mean() for time_day in pireus]
+    pireus_all[""]["before"][factor] = pd.Series(
+        [pireus[time_day]["before"][factor].mean() for time_day in pireus]
     )
 
 fig = plot_radar(dt_ord=pireus_all, theta=theta)
@@ -97,10 +102,10 @@ for key, value in lodz.items():
     fig.tight_layout()
     fig.savefig(PNG / f"radar_lodz_{key.lower()}.png", dpi=200, transparent=True)
 
-lodz_all = defaultdict(defaultdict)
+lodz_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
-    lodz_all[""][factor] = pd.Series(
-        [lodz[time_day][factor].mean() for time_day in lodz]
+    lodz_all[""]["before"][factor] = pd.Series(
+        [lodz[time_day]["before"][factor].mean() for time_day in lodz]
     )
 
 fig = plot_radar(dt_ord=lodz_all, theta=theta)
@@ -125,10 +130,10 @@ for key, value in belgrade.items():
     fig.tight_layout()
     fig.savefig(PNG / f"radar_belgrade_{key.lower()}.png", dpi=200, transparent=True)
 
-belgrade_all = defaultdict(defaultdict)
+belgrade_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
-    belgrade_all[""][factor] = pd.Series(
-        [belgrade[time_day][factor].mean() for time_day in belgrade]
+    belgrade_all[""]["before"][factor] = pd.Series(
+        [belgrade[time_day]["before"][factor].mean() for time_day in belgrade]
     )
 
 fig = plot_radar(dt_ord=belgrade_all, theta=theta)
@@ -154,10 +159,13 @@ for key, value in gladsaxe.items():
     fig.tight_layout()
     fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}.png", dpi=200, transparent=True)
 
-gladsaxe_all = defaultdict(defaultdict)
+gladsaxe_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
-    gladsaxe_all[""][factor] = pd.Series(
-        [gladsaxe[time_day][factor].mean() for time_day in gladsaxe]
+    gladsaxe_all[""]["before"][factor] = pd.Series(
+        [gladsaxe[time_day]["before"][factor].mean() for time_day in gladsaxe]
+    )
+    gladsaxe_all[""]["after"][factor] = pd.Series(
+        [gladsaxe[time_day]["after"][factor].mean() for time_day in gladsaxe]
     )
 
 fig = plot_radar(dt_ord=gladsaxe_all, theta=theta)
