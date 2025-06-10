@@ -16,6 +16,13 @@ df["time_day"] = df["time"].map(lambda x: get_time_label(x))
 belgrade = prepare_data(df=df, location="Zemunski", livability=GROUPS)
 lodz = prepare_data(df=df, location="Łódź", livability=GROUPS)
 pileparken = prepare_data(df=df, location="Pileparken", livability=GROUPS)
+pileparken = prepare_data(
+    df=df,
+    location="Pileparken",
+    livability=GROUPS,
+    comparison=True,
+    after=pd.Timestamp(2025, 5, 1),
+)
 pireus = prepare_data(df=df, location="Akti", livability=GROUPS)
 # %%
 fig = plot_groups(dt_ord=pireus, xlimit=30)
@@ -48,7 +55,7 @@ fig.tight_layout()
 fig.savefig(PNG / "lodz_groups.png", dpi=200)
 
 # %%
-fig = plot_groups(dt_ord=pileparken, xlimit=10)
+fig = plot_groups(dt_ord=pileparken, xlimit=200, comparison=True)
 fig.suptitle(
     "Groups of users for different times of the day Pileparken 6",
     fontsize=12,
@@ -57,4 +64,14 @@ fig.suptitle(
 fig.tight_layout()
 fig.savefig(PNG / "gladsaxe_groups.png", dpi=200)
 
+# %%
+
+fig = plot_groups(dt_ord=pileparken, xlimit=10, comparison=False)
+fig.suptitle(
+    "Groups of users for different times of the day Pileparken 6",
+    fontsize=12,
+    weight="bold",
+)
+fig.tight_layout()
+fig.savefig(PNG / "gladsaxe_groups.png", dpi=200)
 # %%

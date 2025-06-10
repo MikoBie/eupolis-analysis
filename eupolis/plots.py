@@ -2,6 +2,28 @@ import matplotlib.pyplot as plt
 from eupolis.utils import process_lst
 from eupolis.config import COLORS
 import numpy as np
+from collections import defaultdict
+from matplotlib import ticker
+import re
+
+rgx = re.compile(r"\d*")
+
+
+def fmt_percent(x: int, pos) -> str:
+    """Takes position and the text of the label and returns a label formatted in percentages.
+
+    Parameters
+    ----------
+    x
+        an integer denoting the label
+    pos
+        an integer denoting a position on axis
+
+    Returns
+    -------
+        an string denoting percentages.
+    """
+    return f"{abs(x)}%"
 
 
 def plot_barplot(
@@ -9,6 +31,7 @@ def plot_barplot(
     vertical_lines: list = [25, 50],
     ticks: list = [-50, -25, 0, 25, 50],
     colors: dict = COLORS,
+    comparison: bool = False,
 ) -> plt.Figure:
     """Plots a histogram where bars are horizontal. The bars on the right are for men while the ones on the left for women.
 
@@ -34,8 +57,25 @@ def plot_barplot(
     else:
         axs_flat = axs.flat
     for ax, time in zip(axs_flat, dt_ord):
-        y_m = [np.mean(value) for key, value in dt_ord[time].items() if "_m" in key]
-        y_f = [-np.mean(value) for key, value in dt_ord[time].items() if "_f" in key]
+        dct = defaultdict(defaultdict)
+        for _, values in dt_ord[time].items():
+            for key, value in values.items():
+                dct[key][_] = np.mean(value)
+
+        y_m = [value["before"] for key, value in dct.items() if "_m" in key]
+        y_f = [-value["before"] for key, value in dct.items() if "_f" in key]
+        if comparison:
+            y_m = [
+                100 * value["after"] / value.get("before", 1)
+                for key, value in dct.items()
+                if "_m" in key
+            ]
+            y_f = [
+                100 * (-value["after"]) / value.get("before", 1)
+                for key, value in dct.items()
+                if "_f" in key
+            ]
+
         xlimit = max(abs(min(y_f)), max(y_m))
         x = {
             0: "Children",
@@ -81,13 +121,21 @@ def plot_barplot(
             ax.axvline(x=-item, linestyle="--", color="darkgrey", linewidth=0.5)
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
         ax.set_xlim(-xlimit - 5, xlimit + 5)
-        for label in ax.get_xticklabels():
-            if value := float(label.get_text()) < 0:
-                label.set_text(abs(value))
+        if comparison:
+            for label in ax.get_xticklabels():
+                if value := float(label.get_text()) < 0:
+                    label.set_text(f"{abs(value)}%")
+            ax.xaxis.set_major_formatter(ticker.FuncFormatter(fmt_percent))
+        else:
+            for label in ax.get_xticklabels():
+                if value := float(label.get_text()) < 0:
+                    label.set_text(abs(value))
     return fig
 
 
-def plot_groups(dt_ord: dict, colors: dict = COLORS, xlimit: int = 10) -> plt.Figure:
+def plot_groups(
+    dt_ord: dict, colors: dict = COLORS, xlimit: int = 10, comparison: bool = False
+) -> plt.Figure:
     """Plots barplots for groups.
 
     Parameters
@@ -122,10 +170,18 @@ def plot_groups(dt_ord: dict, colors: dict = COLORS, xlimit: int = 10) -> plt.Fi
             "bike": "Person on soft mobility",
             "other": "Other",
         }
-        dct = {
-            map_groups[key]: float(np.mean(value))
-            for key, value in dt_ord[time].items()
-        }
+        dct_mn = defaultdict(defaultdict)
+        for _, values in dt_ord[time].items():
+            for key, value in values.items():
+                dct_mn[key][_] = np.mean(value)
+
+        dct = {map_groups[key]: float(value["before"]) for key, value in dct_mn.items()}
+        if comparison:
+            dct = {
+                map_groups[key]: 100 * float(value["after"]) / float(value["before"])
+                for key, value in dct_mn.items()
+            }
+
         dct = {key: value if value == value else 0 for key, value in dct.items()}
         if time != "Morning":
             ax.set_yticks([])
@@ -135,9 +191,16 @@ def plot_groups(dt_ord: dict, colors: dict = COLORS, xlimit: int = 10) -> plt.Fi
         ax.barh(dct.keys(), dct.values(), color=colors["blue"])
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
         ax.set_xlim(0, xlimit)
-        for label in ax.get_xticklabels():
-            if value := float(label.get_text()) < 0:
-                label.set_text(abs(value))
+        if comparison:
+            ax.set_xticks([0, 100, 200])
+            for label in ax.get_xticklabels():
+                if value := float(label.get_text()) < 0:
+                    label.set_text(f"{abs(value)}%")
+            ax.xaxis.set_major_formatter(ticker.FuncFormatter(fmt_percent))
+        else:
+            for label in ax.get_xticklabels():
+                if value := float(label.get_text()) < 0:
+                    label.set_text(abs(value))
     return fig
 
 
