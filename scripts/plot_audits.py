@@ -17,8 +17,9 @@ from collections import defaultdict
 
 from eupolis.radar import radar_factory
 
-# %%
+import matplotlib.pyplot as plt
 
+plt.rc("savefig", transparent=True)
 # %%
 df = pd.read_excel(RAW / "audits/euPOLIS_sa_form_all.xlsm", sheet_name="Data")
 df["share_nature"] = df["share_nature"].apply(lambda x: share_replace(x))
@@ -63,14 +64,12 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "radar_akti-dilaveri.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_akti-dilaveri.png", dpi=200)
 for key, value in pireus.items():
     tmp = {key: value}
     fig = plot_radar(dt_ord=tmp, theta=theta)
     fig.tight_layout()
-    fig.savefig(
-        PNG / f"radar_akti-dilaveri_{key.lower()}.png", dpi=200, transparent=True
-    )
+    fig.savefig(PNG / f"radar_akti-dilaveri_{key.lower()}.png", dpi=200)
 
 pireus_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
@@ -80,7 +79,7 @@ for factor in LIVABILITY:
 
 fig = plot_radar(dt_ord=pireus_all, theta=theta)
 fig.tight_layout()
-fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200)
 
 
 # %%
@@ -95,12 +94,12 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "radar_lodz.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_lodz.png", dpi=200)
 for key, value in lodz.items():
     tmp = {key: value}
     fig = plot_radar(dt_ord=tmp, theta=theta)
     fig.tight_layout()
-    fig.savefig(PNG / f"radar_lodz_{key.lower()}.png", dpi=200, transparent=True)
+    fig.savefig(PNG / f"radar_lodz_{key.lower()}.png", dpi=200)
 
 lodz_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
@@ -110,7 +109,7 @@ for factor in LIVABILITY:
 
 fig = plot_radar(dt_ord=lodz_all, theta=theta)
 fig.tight_layout()
-fig.savefig(PNG / "radar_daily_lodz.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_daily_lodz.png", dpi=200)
 # %%
 fig = plot_radar(dt_ord=belgrade, theta=theta)
 
@@ -123,12 +122,12 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "radar_belgrade.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_belgrade.png", dpi=200)
 for key, value in belgrade.items():
     tmp = {key: value}
     fig = plot_radar(dt_ord=tmp, theta=theta)
     fig.tight_layout()
-    fig.savefig(PNG / f"radar_belgrade_{key.lower()}.png", dpi=200, transparent=True)
+    fig.savefig(PNG / f"radar_belgrade_{key.lower()}.png", dpi=200)
 
 belgrade_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
@@ -138,7 +137,7 @@ for factor in LIVABILITY:
 
 fig = plot_radar(dt_ord=belgrade_all, theta=theta)
 fig.tight_layout()
-fig.savefig(PNG / "radar_daily_belgrade.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_daily_belgrade.png", dpi=200)
 # %%
 fig = plot_radar(dt_ord=gladsaxe, theta=theta)
 
@@ -151,15 +150,13 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "radar_gladsaxe_compare.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_gladsaxe_compare.png", dpi=200)
 
 for key, value in gladsaxe.items():
     tmp = {key: value}
     fig = plot_radar(dt_ord=tmp, theta=theta)
     fig.tight_layout()
-    fig.savefig(
-        PNG / f"radar_gladsaxe_{key.lower()}_compare.png", dpi=200, transparent=True
-    )
+    fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}_compare.png", dpi=200)
 
 gladsaxe_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
@@ -172,7 +169,7 @@ for factor in LIVABILITY:
 
 fig = plot_radar(dt_ord=gladsaxe_all, theta=theta)
 fig.tight_layout()
-fig.savefig(PNG / "radar_daily_gladsaxe_compare.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_daily_gladsaxe_compare.png", dpi=200)
 # %%
 gladsaxe = prepare_data(
     df=df.query("date < @pd.Timestamp(2025,5,1)"),
@@ -190,13 +187,13 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "radar_gladsaxe.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_gladsaxe.png", dpi=200)
 
 for key, value in gladsaxe.items():
     tmp = {key: value}
     fig = plot_radar(dt_ord=tmp, theta=theta)
     fig.tight_layout()
-    fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}.png", dpi=200, transparent=True)
+    fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}.png", dpi=200)
 
 gladsaxe_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
@@ -206,7 +203,7 @@ for factor in LIVABILITY:
 
 fig = plot_radar(dt_ord=gladsaxe_all, theta=theta)
 fig.tight_layout()
-fig.savefig(PNG / "radar_daily_gladsaxe.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_daily_gladsaxe.png", dpi=200)
 
 # %%
 COLORS_AFTER = {"blue": value for value in COLORS.values()}
@@ -226,15 +223,13 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "radar_gladsaxe_after.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_gladsaxe_after.png", dpi=200)
 
 for key, value in gladsaxe.items():
     tmp = {key: value}
     fig = plot_radar(dt_ord=tmp, theta=theta, colors=COLORS_AFTER)
     fig.tight_layout()
-    fig.savefig(
-        PNG / f"radar_gladsaxe_{key.lower()}_after.png", dpi=200, transparent=True
-    )
+    fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}_after.png", dpi=200)
 
 gladsaxe_all = defaultdict(lambda: defaultdict(defaultdict))
 for factor in LIVABILITY:
@@ -244,4 +239,4 @@ for factor in LIVABILITY:
 
 fig = plot_radar(dt_ord=gladsaxe_all, theta=theta, colors=COLORS_AFTER)
 fig.tight_layout()
-fig.savefig(PNG / "radar_daily_gladsaxe_after.png", dpi=200, transparent=True)
+fig.savefig(PNG / "radar_daily_gladsaxe_after.png", dpi=200)

@@ -8,8 +8,6 @@ from eupolis.plots import plot_groups
 from eupolis.utils import get_time_label, prepare_data
 
 # %%
-
-# %%
 df = pd.read_excel(RAW / "audits/euPOLIS_sa_form_all.xlsm", sheet_name="Data")
 df["time_day"] = df["time"].map(lambda x: get_time_label(x))
 # %%
