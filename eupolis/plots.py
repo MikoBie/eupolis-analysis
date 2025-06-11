@@ -204,7 +204,7 @@ def plot_groups(
     return fig
 
 
-def plot_radar(dt_ord: dict, theta: np.array, color: dict = COLORS) -> plt.Figure:
+def plot_radar(dt_ord: dict, theta: np.array, colors: dict = COLORS) -> plt.Figure:
     """Plots radar plots.
 
     Parameters
@@ -248,13 +248,13 @@ def plot_radar(dt_ord: dict, theta: np.array, color: dict = COLORS) -> plt.Figur
             ax.plot(
                 theta,
                 [np.mean(item) for item in dt_ord[time]["before"].values()],
-                color=COLORS["blue"],
+                color=colors["blue"],
             )
             ax.fill_between(
                 theta,
                 process_lst(dt_ord[time]["before"].values(), min),
                 process_lst(dt_ord[time]["before"].values(), max),
-                facecolor=COLORS["blue"],
+                facecolor=colors["blue"],
                 alpha=0.25,
             )
             for t, d in zip(
@@ -275,12 +275,12 @@ def plot_radar(dt_ord: dict, theta: np.array, color: dict = COLORS) -> plt.Figur
             ax.plot(
                 theta,
                 [np.mean(item) for item in dt_ord[time]["before"].values()],
-                color=COLORS["blue"],
+                color=colors["blue"],
             )
             ax.plot(
                 theta,
                 [np.mean(item) for item in dt_ord[time]["after"].values()],
-                color=COLORS["green"],
+                color=colors["green"],
             )
 
             for t, b, a in zip(
