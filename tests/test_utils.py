@@ -6,10 +6,13 @@ from eupolis.utils import (
     share_replace,
     count_proportion,
     rescale_number,
+    rename_columns,
+    strip_string,
 )
 import pandas as pd
 import numpy as np
 import datetime
+from eupolis.translation import WEARABLES_Q
 
 
 @pytest.mark.parametrize(
@@ -112,3 +115,28 @@ def test_rescale_number(tpl: tuple) -> None:
     )
     assert isinstance(result, float)
     assert result == new
+
+
+@pytest.mark.parametrize(
+    "col",
+    [
+        (
+            "12.    Βαθμολογήστε από το 1 έως το 7 τις παρακάτω δηλώσεις (όπου 1 διαφωνώ απόλυτα, και 7 συμφωνώ απόλυτα): [g) Η ευρεία χρήση τέτοιων wearables μπορεί να βελτιώσει τη δημόσια υγεία]",
+            "12g)",
+        )
+    ],
+)
+def test_rename_columns(col: tuple) -> None:
+    colname, key = col
+    result = rename_columns(colname, mapping=WEARABLES_Q)
+    assert isinstance(result, str)
+    assert result == key + " " + WEARABLES_Q[key], (
+        f"Expected {key}, got {result} for column {colname}"
+    )
+
+
+def test_strip_string():
+    assert strip_string("  test  ") == "test"
+    assert strip_string(123) == 123
+    assert strip_string(None) is None
+    assert strip_string(["test", "strip"]) == ["test", "strip"]

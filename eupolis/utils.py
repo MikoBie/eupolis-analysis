@@ -2,6 +2,8 @@ import pandas as pd
 import datetime
 from collections.abc import Callable
 from collections import defaultdict
+from eupolis.translation import WEARABLES_Q
+import re
 
 
 def rmv_str_frm_lst(srs: pd.Series) -> pd.Series:
@@ -163,3 +165,42 @@ def rescale_number(
     return ((value - original_min) / (original_max - original_min)) * (
         new_max - new_min
     ) + new_min
+
+
+def rename_columns(s: str, mapping: dict = WEARABLES_Q) -> str:
+    """Rename columns based on a mapping dictionary.
+
+    Parameters
+    ----------
+    s
+        The string to be renamed.
+    mapping
+        A dictionary mapping old column names to new ones.
+
+    Returns
+    -------
+        The renamed string based on the mapping.
+    """
+    rgxd = re.compile(r"\d+")
+    rgxl = re.compile(r"[abcdefg]\)")
+    key = ""
+    if rgxd.search(s):
+        key = rgxd.search(s).group()
+    if rgxl.search(s):
+        key += rgxl.search(s).group()
+    return key + " " + mapping.get(key, s)
+
+
+def strip_string(x):
+    """Returna strip string or the object.
+
+    Parameters
+    ----------
+    x
+        an python object
+
+    Returns
+    -------
+        returns a stirpped string or a python object
+    """
+    return x.strip() if isinstance(x, str) else x
