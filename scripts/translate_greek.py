@@ -2,7 +2,7 @@
 from eupolis import RAW, PROC
 import pandas as pd
 from eupolis.utils import rename_columns, strip_string
-from eupolis.translation import WEARABLES_A
+from eupolis.translation import WEARABLES_A, QUESTIONNAIRE_Q
 
 
 # %%
@@ -14,6 +14,17 @@ def translate_wearables():
     df.to_excel(PROC / "wearables_pireus.xlsx", index=False)
 
 
+def translate_questionnaire():
+    df = pd.read_excel(RAW / "pireus" / "euPOLIS Piraeus Questionaire (Responses).xlsx")
+    df = df.rename(columns=lambda x: QUESTIONNAIRE_Q.get(x, x))
+    df.to_excel(PROC / "questionnaire_pireus.xlsx", index=False)
+
+
+def main():
+    translate_wearables()
+    translate_questionnaire()
+
+
 # %%
 if __name__ == "__main__":
-    translate_wearables()
+    main()

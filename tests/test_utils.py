@@ -123,16 +123,15 @@ def test_rescale_number(tpl: tuple) -> None:
         (
             "12.    Βαθμολογήστε από το 1 έως το 7 τις παρακάτω δηλώσεις (όπου 1 διαφωνώ απόλυτα, και 7 συμφωνώ απόλυτα): [g) Η ευρεία χρήση τέτοιων wearables μπορεί να βελτιώσει τη δημόσια υγεία]",
             "12g)",
-        )
+        ),
+        ("timestamp", "timestamp"),
     ],
 )
 def test_rename_columns(col: tuple) -> None:
     colname, key = col
     result = rename_columns(colname, mapping=WEARABLES_Q)
     assert isinstance(result, str)
-    assert result == key + " " + WEARABLES_Q[key], (
-        f"Expected {key}, got {result} for column {colname}"
-    )
+    assert result == (key + " " + WEARABLES_Q.get(key, "")).strip()
 
 
 def test_strip_string():

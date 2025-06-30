@@ -188,7 +188,7 @@ def rename_columns(s: str, mapping: dict = WEARABLES_Q) -> str:
         key = rgxd.search(s).group()
     if rgxl.search(s):
         key += rgxl.search(s).group()
-    return key + " " + mapping.get(key, s)
+    return (key + " " + mapping.get(key, s)).strip()
 
 
 def strip_string(x):
