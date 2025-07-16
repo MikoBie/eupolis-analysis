@@ -21,10 +21,7 @@ def translate_questionnaire():
     rgx = re.compile(r",\s(?=[Α-Ω])")
     df = pd.read_excel(RAW / "pireus" / "euPOLIS Piraeus Questionaire (Responses).xlsx")
     df = df.rename(columns=lambda x: QUESTIONNAIRE_Q.get(x, x)).map(
-        lambda x: "; ".join(
-            QUESTIONNAIRE_A.get(strip_string(item), strip_string(item))
-            for item in rgx.split(x)
-        )
+        lambda x: "; ".join(QUESTIONNAIRE_A.get(item, item) for item in rgx.split(x))
         if isinstance(x, str)
         else x
     )
