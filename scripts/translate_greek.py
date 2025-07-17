@@ -17,8 +17,6 @@ from eupolis.translation import (
 )
 import re
 
-# %%
-
 
 # %%
 def translate_wearables():
@@ -53,8 +51,7 @@ def process_kids():
     """Process the questionnaire from Rallion School."""
     df = pd.read_excel(RAW / "pireus" / "kids_questionnaire.xlsx")
     for n, dct in KIDS.items():
-        df.iloc[:, n] = df.iloc[:, n].apply(lambda x: str(x))
-        df.iloc[:, n] = df.iloc[:, n].map(
+        df[df.iloc[:, 1].name] = df[df.iloc[:, n].name].map(
             lambda x: "; ".join(
                 dct.get(strip_string(item), strip_string(item))
                 for item in str(x).split(";")
