@@ -330,3 +330,64 @@ OTHER_A = {
     "Διαφωνώ απόλυτα": 1,
     "Συμφωνώ Απόλυτα": 5,
 }
+
+KIDS_1 = {
+    "1": "I do sports",
+    "2": "I study, do my homework",
+    "3": "I use my mobile phone",
+    "4": "I sit in a quiet space",
+    "5": "I talk with others",
+    "6": "I read",
+    "7": "I eat my lunch",
+}
+
+KIDS_2 = {
+    "1": "I spend time on my own",
+    "2": "I spend time with my friends",
+    "3": "I spend time with adults/teachers",
+}
+
+KIDS_3 = {
+    "1": "a lot more",
+    "2": "a bit more",
+    "3": "a bit less",
+    "4": "a lot less",
+}
+
+KIDS_5 = {
+    "1": "Pretty",
+    "2": "Fun",
+    "3": "Green",
+    "4": "Interesting",
+    "5": "Sunny",
+    "6": "Has shade",
+    "7": "Comfortable to sit",
+    "8": "Good to meet other kids",
+    "9": "Good to observe animals",
+    "10": "Good to play sports",
+    "11": "Good to relax",
+    "12": "Good to play games",
+}
+
+KIDS_6 = {
+    "1": "Ugly",
+    "2": "Boring",
+    "3": "Dusty",
+    "4": "No playground",
+    "5": "Loud",
+    "6": "No shade",
+    "7": "No place to sit",
+    "8": "Lonely",
+    "9": "No animals",
+    "10": "Crowded",
+    "11": "Tiring",
+    "12": "Too hot",
+}
+
+KIDS = {
+    1: KIDS_1,
+    2: KIDS_2,
+    3: KIDS_3,
+    7: KIDS_5,
+    8: KIDS_6,
+}

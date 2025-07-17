@@ -13,6 +13,7 @@ from eupolis.translation import (
     ENCOURAGEMENT_A,
     MAINTENANCE_A,
     OTHER_A,
+    KIDS,
 )
 import re
 
@@ -21,6 +22,7 @@ import re
 
 # %%
 def translate_wearables():
+    """Translates the questions and answers of the wearables questionnaire."""
     df = pd.read_csv(RAW / "pireus" / "euPOLIS Piraeus Questionaire-Wearables.csv")
     df = df.rename(columns=lambda x: rename_columns(x)).map(
         lambda x: WEARABLES_A.get(strip_string(x), strip_string(x))
@@ -29,6 +31,7 @@ def translate_wearables():
 
 
 def translate_questionnaire():
+    """Translates the questions and answers of the Greek questionnaire."""
     rgx = re.compile(r",\s(?=[Α-Ω])")
     df = pd.read_excel(RAW / "pireus" / "euPOLIS Piraeus Questionaire (Responses).xlsx")
     df = df.rename(columns=lambda x: QUESTIONNAIRE_Q.get(x, x)).map(
@@ -46,9 +49,24 @@ def translate_questionnaire():
     df.to_excel(PROC / "questionnaire_pireus.xlsx", index=False)
 
 
+def process_kids():
+    """Process the questionnaire from Rallion School."""
+    df = pd.read_excel(RAW / "pireus" / "kids_questionnaire.xlsx")
+    for n, dct in KIDS.items():
+        df.iloc[:, n] = df.iloc[:, n].apply(lambda x: str(x))
+        df.iloc[:, n] = df.iloc[:, n].map(
+            lambda x: "; ".join(
+                dct.get(strip_string(item), strip_string(item))
+                for item in str(x).split(";")
+            )
+        )
+    df.to_excel(PROC / "kids_pireus.xlsx")
+
+
 def main():
     translate_wearables()
     translate_questionnaire()
+    process_kids()
 
 
 # %%
