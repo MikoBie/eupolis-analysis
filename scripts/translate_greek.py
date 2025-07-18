@@ -51,13 +51,13 @@ def process_kids():
     """Process the questionnaire from Rallion School."""
     df = pd.read_excel(RAW / "pireus" / "kids_questionnaire.xlsx")
     for n, dct in KIDS.items():
-        df[df.iloc[:, 1].name] = df[df.iloc[:, n].name].map(
+        df[df.iloc[:, n].name] = df[df.iloc[:, n].name].map(
             lambda x: "; ".join(
                 dct.get(strip_string(item), strip_string(item))
                 for item in str(x).split(";")
             )
         )
-    df.to_excel(PROC / "kids_pireus.xlsx")
+    df.to_excel(PROC / "kids_pireus.xlsx", index=False)
 
 
 def main():
