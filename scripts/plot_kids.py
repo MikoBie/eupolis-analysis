@@ -1,49 +1,71 @@
 # %%
 from eupolis import PROC
 import pandas as pd
-from collections import Counter
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
-from eupolis.config import COLORS
+from eupolis.plots import plot_kids_barhplot, plot_kids_barplot
+from eupolis.utils import prepare_kids_data
 
 # %%
 df = pd.read_excel(PROC / "kids_pireus.xlsx")
 df[df.columns[1]] = df.loc[:, df.columns[1]].apply(lambda x: x.split(";"))
+df[df.columns[7]] = df.loc[:, df.columns[7]].apply(
+    lambda x: x.split(";") if isinstance(x, str) else []
+)
+df[df.columns[8]] = df.loc[:, df.columns[8]].apply(
+    lambda x: x.split(";") if isinstance(x, str) else []
+)
 
 # %%
 df.value_counts("Sex")
 
 # %%
-lst = []
-for _, sex in df.groupby("Sex"):
-    n = sex.shape[0]
-    count = Counter([el for item in sex[df.columns[1]].tolist() for el in item])
-    count = {key: value * 100 / n for key, value in count.items()}
-    sex_df = pd.DataFrame({"names": count.keys(), _: count.values()})
-    lst.append(sex_df.set_index("names"))
-sex = lst[0].join(lst[1], how="outer").reset_index()
-# %%
-fig, axs = plt.subplots(figsize=(6, 4), nrows=1, ncols=2)
-rect = axs[0].barh(
-    sex["names"], sex["Male"], color=COLORS["blue"], label="Male (n = 6)"
-)
-axs[0].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
-rect = axs[1].barh(
-    sex["names"], sex["Female"], color=COLORS["green"], label="Female (n = 10)"
-)
-axs[1].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
-axs[1].set_yticks([])
-for ax in axs:
-    for spin in ax.spines:
-        if spin != "bottom" and spin != "left":
-            ax.spines[spin].set_visible(False)
-    ax.xaxis.set_major_formatter(mtick.PercentFormatter())
+## What are you usually doing while you are in the schoolyard?
+df_1 = prepare_kids_data(df, 1)
+fig = plot_kids_barhplot(df_1)
 
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.6, -0.03), fancybox=True, shadow=True
 )
 fig.suptitle(
     f"{df.columns[1].replace('1.', '').strip() + '?'}", fontsize=12, weight="bold"
+)
+fig.tight_layout()
+# %%
+## What do you like about the schoolyard?
+df_2 = prepare_kids_data(df, 7)
+fig = plot_kids_barhplot(df_2)
+
+
+fig.legend(
+    ncol=2, loc="center", bbox_to_anchor=(0.6, -0.03), fancybox=True, shadow=True
+)
+fig.suptitle(f"{df.columns[7].replace('5.', '').strip()}", fontsize=12, weight="bold")
+fig.tight_layout()
+
+# %%
+## What do you dislike about the schoolyard?
+df_3 = prepare_kids_data(df, 8)
+fig = plot_kids_barhplot(df_3)
+
+fig.legend(
+    ncol=2, loc="center", bbox_to_anchor=(0.6, -0.03), fancybox=True, shadow=True
+)
+fig.suptitle(f"{df.columns[8].replace('6.', '').strip()}", fontsize=12, weight="bold")
+fig.tight_layout()
+# %%
+## While you are in the schoolyard do you spend your time alone of with other kids?
+df.iloc[:, 2].value_counts()
+
+# %%
+## Whould you like to have spend more or less time in the schoolyard during your day at school?
+df.iloc[:, 3].value_counts()
+
+# %%
+## You can give stars to places listed below. Please give one star if you don’t like being there, three stars if it is OK, and five stars if you really like being there a lot
+
+fig = plot_kids_barplot(df=df)
+
+fig.suptitle(
+    "How much do you like the following places (1-5)?", fontsize=12, weight="bold"
 )
 fig.tight_layout()
 # %%

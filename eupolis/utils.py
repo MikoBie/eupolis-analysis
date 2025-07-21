@@ -4,6 +4,7 @@ from collections.abc import Callable
 from collections import defaultdict
 from eupolis.translation import WEARABLES_Q
 import re
+from collections import Counter
 
 
 def rmv_str_frm_lst(srs: pd.Series) -> pd.Series:
@@ -204,3 +205,29 @@ def strip_string(x):
         returns a stirpped string or a python object
     """
     return x.strip() if isinstance(x, str) else x
+
+
+def prepare_kids_data(df: pd.DataFrame, column: int) -> pd.DataFrame:
+    """Prepares data for plotting by counting occurences of items in a specified column.
+
+    Parameters
+    ----------
+    df
+        a data frame containing the data
+    column
+        a column index to count items in. The column should contain lists of items.
+
+    Returns
+    -------
+        a data frame with item names and their counts divided by the sex.
+    """
+    lst = []
+    for _, sex in df.groupby("Sex"):
+        n = sex.shape[0]
+        count = Counter(
+            [el for item in sex[df.columns[column]].tolist() for el in item]
+        )
+        count = {key: value * 100 / n for key, value in count.items()}
+        sex_df = pd.DataFrame({"names": count.keys(), _: count.values()})
+        lst.append(sex_df.set_index("names"))
+    return lst[0].join(lst[1], how="outer").reset_index()

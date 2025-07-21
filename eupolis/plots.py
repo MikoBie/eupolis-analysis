@@ -5,8 +5,8 @@ import numpy as np
 from collections import defaultdict
 from matplotlib import ticker
 import re
-
-rgx = re.compile(r"\d*")
+import pandas as pd
+from textwrap import wrap
 
 
 def fmt_percent(x: int, pos) -> str:
@@ -306,4 +306,118 @@ def plot_radar(dt_ord: dict, theta: np.array, colors: dict = COLORS) -> plt.Figu
         for label in ax.get_xticklabels():
             if label.get_text() == "Multifunctionality":
                 label.set_position([0, 0.12])
+    return fig
+
+
+def plot_kids_barhplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
+    """Plots a horizontal bar plot for the data prepared by `prepare_data`.
+
+    Parameters
+    ----------
+    df
+        a data frame containing the data
+
+    COLORS, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+
+    Returns
+    -------
+        a matplotlib figure object.
+    """
+    fig, axs = plt.subplots(figsize=(6, 4), nrows=1, ncols=2)
+    rect = axs[0].barh(
+        df["names"], df["Male"], color=COLORS["blue"], label="Male (n = 6)"
+    )
+    axs[0].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
+    rect = axs[1].barh(
+        df["names"], df["Female"], color=COLORS["green"], label="Female (n = 10)"
+    )
+    axs[1].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
+    axs[1].set_yticks([])
+    for ax in axs:
+        for spin in ax.spines:
+            if spin != "bottom" and spin != "left":
+                ax.spines[spin].set_visible(False)
+        ax.xaxis.set_major_formatter(ticker.PercentFormatter())
+        ax.set_xlim(0, 100)
+    return fig
+
+
+def plot_kids_barplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
+    """Plots three histogram-like bar plots for the three questions from the
+    kids questionnaire. The bars are groupped by gender.
+
+    Parameters
+    ----------
+    df
+        data from the kids questionnaire.
+
+    COLORS, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+
+
+    Returns
+    -------
+        a matplotlib figure object with three subplots.
+    """
+    rgx = re.compile(r"\d\w\.")
+
+    fig, axs = plt.subplots(figsize=(6, 4), nrows=1, ncols=3)
+    for n, ax in enumerate(axs):
+        df1 = (
+            df.loc[df.Sex == "Female", df.columns[4 + n]]
+            .value_counts()
+            .reset_index()
+            .assign(precent=lambda x: (x["count"] / 11) * 100)
+        )
+        df2 = (
+            df.loc[df.Sex == "Male", df.columns[4 + n]]
+            .value_counts()
+            .reset_index()
+            .assign(precent=lambda x: (x["count"] / 6) * 100)
+        )
+        rect1 = ax.bar(
+            df1.iloc[:, 0].apply(lambda x: x - 0.25).tolist(),
+            df1.loc[:, "precent"].tolist(),
+            width=0.45,
+            color=COLORS["green"],
+            label="Female",
+        )
+        ax.bar_label(
+            rect1, padding=0.9, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6
+        )
+        rect2 = ax.bar(
+            df2.iloc[:, 0].apply(lambda x: x + 0.25).tolist(),
+            df2.loc[:, "precent"].tolist(),
+            width=0.45,
+            color=COLORS["blue"],
+            label="Male",
+        )
+        ax.bar_label(
+            rect2, padding=0.9, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6
+        )
+        ax.set_xlim(0, 6)
+        ax.set_ylim(0, 100)
+        ax.yaxis.set_major_formatter(ticker.PercentFormatter())
+        ax.set_xticks(range(1, 6))
+        for spin in ax.spines:
+            if spin != "bottom" and spin != "left":
+                ax.spines[spin].set_visible(False)
+            elif spin == "left" and n != 0:
+                ax.spines[spin].set_visible(False)
+        if n != 0:
+            ax.set_yticks([])
+
+        title = rgx.sub("", df.columns[4 + n].strip())
+        ax.set_title("\n".join(wrap(title, 30)), fontsize=8)
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        ncol=2,
+        loc="center",
+        bbox_to_anchor=(0.6, -0.03),
+        fancybox=True,
+        shadow=True,
+    )
     return fig
