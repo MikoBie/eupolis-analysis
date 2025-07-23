@@ -421,3 +421,80 @@ def plot_kids_barplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
         shadow=True,
     )
     return fig
+
+
+def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
+    """Plots a bar plot for the wearables data.
+
+    Parameters
+    ----------
+    df
+        data from the wearables questionnaire.
+
+    COLORS, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+
+    Returns
+    -------
+        a matplotlib figure object with one subplot.
+    """
+    gdf = gdf.sort_values(gdf.columns[1])
+    fig, axs = plt.subplots(figsize=(3, 4), nrows=1, ncols=1)
+    if isinstance(axs, plt.Axes):
+        axs = [axs]
+
+    for (
+        n,
+        ax,
+    ) in enumerate(axs):
+        female = (
+            gdf[gdf.iloc[:, 0] == "female"]
+            .reset_index(drop=True)
+            .assign(perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100)
+        )
+        male = (
+            gdf[gdf.iloc[:, 0] == "male"]
+            .reset_index(drop=True)
+            .assign(perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100)
+        )
+        female_rect = ax.bar(
+            [-0.25, 0.75, 1.75],
+            female.loc[:, "perc"].tolist(),
+            width=0.45,
+            label=f"Female (n = {female['count'].sum()})",
+            color=COLORS["green"],
+        )
+        male_rect = ax.bar(
+            [0.25, 1.25, 2.25],
+            male.loc[:, "perc"].tolist(),
+            width=0.45,
+            label=f"Male (n = {male['count'].sum()})",
+            color=COLORS["blue"],
+        )
+        ax.bar_label(female_rect, fmt=lambda x: f"{int(round(x, 0))}%")
+        ax.bar_label(male_rect, fmt=lambda x: f"{int(round(x, 0))}%")
+        ax.set_ylim(0, 100)
+        ax.yaxis.set_major_formatter(ticker.PercentFormatter())
+        ax.set_xticks([0, 1, 2])
+        labels = [
+            "\n".join(wrap(text, 10)) for text in gdf.iloc[:, 1].unique().tolist()
+        ]
+        ax.set_xticklabels(labels, fontsize=8)
+        for spin in ax.spines:
+            if spin != "bottom" and spin != "left":
+                ax.spines[spin].set_visible(False)
+            elif spin == "left" and n != 0:
+                ax.spines[spin].set_visible(False)
+        if n != 0:
+            ax.set_yticks([])
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        ncol=2,
+        loc="center",
+        bbox_to_anchor=(0.5, -0.03),
+        fancybox=True,
+        shadow=True,
+    )
+    return fig
