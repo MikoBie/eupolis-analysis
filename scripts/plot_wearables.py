@@ -27,14 +27,17 @@ fig = plot_wearables_barplot(gdf=gdf_5)
 
 # %%
 ## How frequently did you wear the device?
-df.iloc[:, 6].value_counts()
+gdf_6 = df.iloc[:, [2, 6]].groupby("2 sex").value_counts().reset_index()
+fig = plot_wearables_barplot(gdf=gdf_6)
 
 # %%
 ## How often did you use the "euPOLIS by BioAssit" app?
-df.iloc[:, 7].value_counts()
+gdf_7 = df.iloc[:, [2, 7]].groupby("2 sex").value_counts().reset_index()
+fig = plot_wearables_barplot(gdf=gdf_7)
 
 # %%
 ## How often did you use the "Huwaii" app?
-df.iloc[:, 8].value_counts()
+gdf_8 = df.iloc[:, [2, 8]].groupby("2 sex").value_counts().reset_index()
+fig = plot_wearables_barplot(gdf=gdf_8)
 
 # %%

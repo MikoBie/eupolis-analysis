@@ -438,8 +438,9 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
     -------
         a matplotlib figure object with one subplot.
     """
-    gdf = gdf.sort_values(gdf.columns[1])
-    fig, axs = plt.subplots(figsize=(3, 4), nrows=1, ncols=1)
+    gdf = gdf.assign(codes=lambda x: pd.Categorical(x.iloc[:, 1]).codes)
+    major_ticks = dict(zip(gdf.codes, gdf.iloc[:, 1]))
+    fig, axs = plt.subplots(figsize=(4, 5), nrows=1, ncols=1)
     if isinstance(axs, plt.Axes):
         axs = [axs]
 
@@ -450,22 +451,28 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
         female = (
             gdf[gdf.iloc[:, 0] == "female"]
             .reset_index(drop=True)
-            .assign(perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100)
+            .assign(
+                perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100,
+                loc=lambda x: x["codes"] - 0.25,
+            )
         )
         male = (
             gdf[gdf.iloc[:, 0] == "male"]
             .reset_index(drop=True)
-            .assign(perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100)
+            .assign(
+                perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100,
+                loc=lambda x: x["codes"] + 0.25,
+            )
         )
         female_rect = ax.bar(
-            [-0.25, 0.75, 1.75],
+            female.loc[:, "loc"].tolist(),
             female.loc[:, "perc"].tolist(),
             width=0.45,
             label=f"Female (n = {female['count'].sum()})",
             color=COLORS["green"],
         )
         male_rect = ax.bar(
-            [0.25, 1.25, 2.25],
+            male.loc[:, "loc"].tolist(),
             male.loc[:, "perc"].tolist(),
             width=0.45,
             label=f"Male (n = {male['count'].sum()})",
@@ -475,11 +482,14 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
         ax.bar_label(male_rect, fmt=lambda x: f"{int(round(x, 0))}%")
         ax.set_ylim(0, 100)
         ax.yaxis.set_major_formatter(ticker.PercentFormatter())
-        ax.set_xticks([0, 1, 2])
-        labels = [
-            "\n".join(wrap(text, 10)) for text in gdf.iloc[:, 1].unique().tolist()
-        ]
-        ax.set_xticklabels(labels, fontsize=8)
+        ax.xaxis.set_major_formatter(
+            ticker.FuncFormatter(
+                lambda x, pos: "\n".join(wrap(major_ticks.get(x, ""), 10))
+            )
+        )
+        ax.set_xticks(list(major_ticks))
+        ax.tick_params(axis="both", which="major", labelsize=8)
+
         for spin in ax.spines:
             if spin != "bottom" and spin != "left":
                 ax.spines[spin].set_visible(False)
