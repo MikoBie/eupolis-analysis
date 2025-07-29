@@ -381,7 +381,7 @@ def plot_kids_barplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
             df1.loc[:, "precent"].tolist(),
             width=0.45,
             color=COLORS["green"],
-            label="Female",
+            label="Female (n = 11)",
         )
         ax.bar_label(
             rect1, padding=0.9, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6
@@ -391,7 +391,7 @@ def plot_kids_barplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
             df2.loc[:, "precent"].tolist(),
             width=0.45,
             color=COLORS["blue"],
-            label="Male",
+            label="Male (n = 6)",
         )
         ax.bar_label(
             rect2, padding=0.9, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6
@@ -416,7 +416,7 @@ def plot_kids_barplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
         labels,
         ncol=2,
         loc="center",
-        bbox_to_anchor=(0.6, -0.03),
+        bbox_to_anchor=(0.5, -0.03),
         fancybox=True,
         shadow=True,
     )
@@ -440,7 +440,7 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
     """
     gdf = gdf.assign(codes=lambda x: pd.Categorical(x.iloc[:, 1]).codes)
     major_ticks = dict(zip(gdf.codes, gdf.iloc[:, 1]))
-    fig, axs = plt.subplots(figsize=(4, 5), nrows=1, ncols=1)
+    fig, axs = plt.subplots(figsize=(4, 4), nrows=1, ncols=1)
     if isinstance(axs, plt.Axes):
         axs = [axs]
 
@@ -507,4 +507,105 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
         fancybox=True,
         shadow=True,
     )
+    return fig
+
+
+def plot_likert_barplot(
+    df: pd.DataFrame,
+    starting_column: int,
+    n_columns: int,
+    COLORS: dict = COLORS,
+    legend: bool = True,
+) -> plt.Figure:
+    """Plots a bar plot for the likert data.
+
+    Parameters
+    ----------
+    df
+        data from the likert questionnaire.
+    starting_column
+        the index of the first column with likert data.
+    n_columns
+        the number of columns with likert data.
+    COLORS, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+    legend, optional
+        a boolean indicating whether to show the legend, by default True
+
+    Returns
+    -------
+        a matplotlib figure object with the maximum of 3 subplots.
+    """
+    rgx = re.compile(r"^\d+\w\)")
+    fig, axs = plt.subplots(figsize=(n_columns * 3, 4), nrows=1, ncols=n_columns)
+
+    for n, ax in enumerate(axs.flat):
+        gdf = (
+            df.iloc[:, [2, starting_column + n]]
+            .groupby("2 sex")
+            .value_counts()
+            .reset_index()
+        )
+        female = (
+            gdf[gdf.iloc[:, 0] == "female"]
+            .reset_index(drop=True)
+            .assign(
+                perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100,
+                loc=lambda x: x[x.columns[1]] + 0.25,
+            )
+        )
+        male = (
+            gdf[gdf.iloc[:, 0] == "male"]
+            .reset_index(drop=True)
+            .assign(
+                perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100,
+                loc=lambda x: x[x.columns[1]] - 0.25,
+            )
+        )
+        female_rect = ax.bar(
+            female.loc[:, "loc"].tolist(),
+            female.loc[:, "perc"].tolist(),
+            width=0.45,
+            label=f"Female (n = {female['count'].sum()})",
+            color=COLORS["green"],
+        )
+        male_rect = ax.bar(
+            male.loc[:, "loc"].tolist(),
+            male.loc[:, "perc"].tolist(),
+            width=0.45,
+            label=f"Male (n = {male['count'].sum()})",
+            color=COLORS["blue"],
+        )
+        ax.bar_label(female_rect, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6)
+        ax.bar_label(male_rect, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6)
+        ax.set_ylim(0, 100)
+        ax.yaxis.set_major_formatter(ticker.PercentFormatter())
+        ax.set_xlim(0.5, 7.5)
+        ax.set_xticks([1, 2, 3, 4, 5, 6, 7])
+
+        for spin in ax.spines:
+            if spin != "bottom" and spin != "left":
+                ax.spines[spin].set_visible(False)
+            elif spin == "left" and n not in [0, 3]:
+                ax.spines[spin].set_visible(False)
+        if n not in [0, 3]:
+            ax.set_yticks([])
+        ax.set_title(
+            rgx.sub(string=gdf.columns[1].replace("_", " "), repl="")
+            .strip()
+            .capitalize(),
+            fontsize=10,
+            weight="bold",
+        )
+    handles, labels = ax.get_legend_handles_labels()
+    if legend:
+        fig.legend(
+            handles,
+            labels,
+            ncol=2,
+            loc="center",
+            bbox_to_anchor=(0.5, -0.03),
+            fancybox=True,
+            shadow=True,
+        )
     return fig
