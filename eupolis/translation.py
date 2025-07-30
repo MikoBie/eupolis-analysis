@@ -73,6 +73,7 @@ WEARABLES_A = {
     "Ναι → επιλέξτε όσες αλλαγές ισχύουν:;Είμαι πιο κινητοποιημένος για σωματική δραστηριότητα;Κινούμαι περισσότερο;Προσπαθώ να μειώσω τον χρόνο μπροστά σε οθόνες": "I am more motivated to be more physically active; I am motivated to walk more; I try to reduce my screen time",
     "7 απόλυτα συμφωνώ": "7",
     "7 Απόλυτα Συμφωνώ": "7",
+    "1 Διαφωνώ": "1",
 }
 
 QUESTIONNAIRE_Q = {

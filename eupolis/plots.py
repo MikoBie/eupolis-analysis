@@ -309,7 +309,9 @@ def plot_radar(dt_ord: dict, theta: np.array, colors: dict = COLORS) -> plt.Figu
     return fig
 
 
-def plot_kids_barhplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
+def plot_kids_barhplot(
+    df: pd.DataFrame, COLORS: dict = COLORS, labels_size: int = 10
+) -> plt.Figure:
     """Plots a horizontal bar plot for the data prepared by `prepare_data`.
 
     Parameters
@@ -329,6 +331,7 @@ def plot_kids_barhplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
         df["names"], df["Male"], color=COLORS["blue"], label="Male (n = 6)"
     )
     axs[0].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
+    axs[0].tick_params(axis="y", which="major", labelsize=labels_size)
     rect = axs[1].barh(
         df["names"], df["Female"], color=COLORS["green"], label="Female (n = 10)"
     )
@@ -591,9 +594,14 @@ def plot_likert_barplot(
         if n not in [0, 3]:
             ax.set_yticks([])
         ax.set_title(
-            rgx.sub(string=gdf.columns[1].replace("_", " "), repl="")
-            .strip()
-            .capitalize(),
+            "\n".join(
+                wrap(
+                    rgx.sub(string=gdf.columns[1].replace("_", " "), repl="")
+                    .strip()
+                    .capitalize(),
+                    20,
+                )
+            ),
             fontsize=10,
             weight="bold",
         )

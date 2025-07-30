@@ -7,11 +7,12 @@ from eupolis.plots import (
     plot_kids_barhplot,
 )
 from eupolis.utils import prepare_kids_data
+from textwrap import wrap
 
 # %%
 df = pd.read_excel(PROC / "wearables_pireus.xlsx")
 df[df.columns[20]] = df.loc[:, df.columns[20]].apply(
-    lambda x: x.split(";") if isinstance(x, str) else []
+    lambda x: [item.strip() for item in x.split(";")] if isinstance(x, str) else []
 )
 
 # %%
@@ -63,6 +64,28 @@ fig2 = plot_likert_barplot(df=df, starting_column=17, n_columns=3, legend=True)
 df_11 = prepare_kids_data(df.rename(columns={"2 sex": "Sex"}), 20).rename(
     columns={"female": "Female", "male": "Male"}
 )
+df_11.loc[:, "names"] = df_11.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
+fig = plot_kids_barhplot(df_11, labels_size=6)
+fig.legend(
+    ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
+)
 # %%
-fig = plot_kids_barhplot(df_11)
+## How much do you agree with the following statements?
+fig = plot_likert_barplot(df=df, starting_column=21, n_columns=3, legend=False)
+fig2 = plot_likert_barplot(df=df, starting_column=25, n_columns=3, legend=True)
+
+
 # %%
+## Have you used a similar device in the past?
+gdf_28 = df.iloc[:, [2, 28]].groupby("2 sex").value_counts().reset_index()
+fig = plot_wearables_barplot(gdf=gdf_28)
+
+# %%
+## Have you used a health related smartphone app in the past?
+gdf_29 = df.iloc[:, [2, 29]].groupby("2 sex").value_counts().reset_index()
+fig = plot_wearables_barplot(gdf=gdf_29)
+
+# %%
+## How important are the following issues when you are thinking about monitoring your health using apps and wearables?
+fig = plot_likert_barplot(df=df, starting_column=30, n_columns=3, legend=False)
+fig2 = plot_likert_barplot(df=df, starting_column=33, n_columns=3, legend=True)
