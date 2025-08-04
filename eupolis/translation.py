@@ -271,6 +271,8 @@ QUESTIONNAIRE_A = {
     "Ναι": "Yes",
     "ΟΧΙ": "No",
     "oxi": "No",
+    "Άλλο": "Other",
+    "Πάω για καφέ": "Go for a coffee",
 }
 
 QUALITY_A = {

@@ -310,7 +310,11 @@ def plot_radar(dt_ord: dict, theta: np.array, colors: dict = COLORS) -> plt.Figu
 
 
 def plot_kids_barhplot(
-    df: pd.DataFrame, COLORS: dict = COLORS, labels_size: int = 10
+    df: pd.DataFrame,
+    COLORS: dict = COLORS,
+    labels_size: int = 10,
+    male_n: int = 6,
+    female_n: int = 10,
 ) -> plt.Figure:
     """Plots a horizontal bar plot for the data prepared by `prepare_data`.
 
@@ -328,12 +332,15 @@ def plot_kids_barhplot(
     """
     fig, axs = plt.subplots(figsize=(6, 4), nrows=1, ncols=2)
     rect = axs[0].barh(
-        df["names"], df["Male"], color=COLORS["blue"], label="Male (n = 6)"
+        df["names"], df["Male"], color=COLORS["blue"], label=f"Male (n = {male_n})"
     )
     axs[0].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
     axs[0].tick_params(axis="y", which="major", labelsize=labels_size)
     rect = axs[1].barh(
-        df["names"], df["Female"], color=COLORS["green"], label="Female (n = 10)"
+        df["names"],
+        df["Female"],
+        color=COLORS["green"],
+        label=f"Female (n = {female_n})",
     )
     axs[1].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
     axs[1].set_yticks([])
@@ -487,7 +494,7 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
         ax.yaxis.set_major_formatter(ticker.PercentFormatter())
         ax.xaxis.set_major_formatter(
             ticker.FuncFormatter(
-                lambda x, pos: "\n".join(wrap(major_ticks.get(x, ""), 10))
+                lambda x, pos: "\n".join(wrap(str(major_ticks.get(x, "")), 10))
             )
         )
         ax.set_xticks(list(major_ticks))
@@ -542,7 +549,9 @@ def plot_likert_barplot(
     rgx = re.compile(r"^\d+\w\)")
     fig, axs = plt.subplots(figsize=(n_columns * 3, 4), nrows=1, ncols=n_columns)
 
-    for n, ax in enumerate(axs.flat):
+    axs_flat = [axs] if isinstance(axs, plt.Axes) else axs.flat
+
+    for n, ax in enumerate(axs_flat):
         gdf = (
             df.iloc[:, [2, starting_column + n]]
             .groupby("2 sex")
