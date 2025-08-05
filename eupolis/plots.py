@@ -433,7 +433,9 @@ def plot_kids_barplot(df: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
     return fig
 
 
-def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figure:
+def plot_wearables_barplot(
+    gdf: pd.DataFrame, COLORS: dict = COLORS, font_size: int = 10, wrap_length: int = 10
+) -> plt.Figure:
     """Plots a bar plot for the wearables data.
 
     Parameters
@@ -443,6 +445,12 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
 
     COLORS, optional
         a dictionary with keys blue and green and values hexes of colors, by default COLORS
+
+    font_size, optional
+        the size of the xaxis major tick labels, by default 10
+
+    wrap_length, optional
+        the length of the string in line of the xaxis major tick labels, by default 10
 
     Returns
     -------
@@ -494,11 +502,11 @@ def plot_wearables_barplot(gdf: pd.DataFrame, COLORS: dict = COLORS) -> plt.Figu
         ax.yaxis.set_major_formatter(ticker.PercentFormatter())
         ax.xaxis.set_major_formatter(
             ticker.FuncFormatter(
-                lambda x, pos: "\n".join(wrap(str(major_ticks.get(x, "")), 10))
+                lambda x, pos: "\n".join(wrap(str(major_ticks.get(x, "")), wrap_length))
             )
         )
         ax.set_xticks(list(major_ticks))
-        ax.tick_params(axis="both", which="major", labelsize=8)
+        ax.tick_params(axis="x", which="major", labelsize=font_size)
 
         for spin in ax.spines:
             if spin != "bottom" and spin != "left":
@@ -526,6 +534,8 @@ def plot_likert_barplot(
     n_columns: int,
     COLORS: dict = COLORS,
     legend: bool = True,
+    min_tick: int = 1,
+    max_tick: int = 7,
 ) -> plt.Figure:
     """Plots a bar plot for the likert data.
 
@@ -541,6 +551,10 @@ def plot_likert_barplot(
         a dictionary with keys blue and green and values hexes of colors, by default COLORS
     legend, optional
         a boolean indicating whether to show the legend, by default True
+    max_tick, optional
+        an integer indicating the maximum tick on the x ax, by default 1
+    min_tick, optional
+        an integer indicating the minimum tick on the x ax, by default 7
 
     Returns
     -------
@@ -592,8 +606,8 @@ def plot_likert_barplot(
         ax.bar_label(male_rect, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6)
         ax.set_ylim(0, 100)
         ax.yaxis.set_major_formatter(ticker.PercentFormatter())
-        ax.set_xlim(0.5, 7.5)
-        ax.set_xticks([1, 2, 3, 4, 5, 6, 7])
+        ax.set_xlim(min_tick - 0.5, max_tick + 0.5)
+        ax.set_xticks(list(range(min_tick, max_tick + 1, 1)))
 
         for spin in ax.spines:
             if spin != "bottom" and spin != "left":

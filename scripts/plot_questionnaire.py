@@ -1,7 +1,11 @@
 # %%
 import pandas as pd
 from eupolis import PROC
-from eupolis.plots import plot_wearables_barplot, plot_kids_barhplot
+from eupolis.plots import (
+    plot_wearables_barplot,
+    plot_kids_barhplot,
+    plot_likert_barplot,
+)
 from eupolis.utils import prepare_kids_data
 from textwrap import wrap
 
@@ -19,6 +23,20 @@ df[df.columns[22]] = df[df.columns[22]].apply(
 )
 df[df.columns[23]] = df[df.columns[23]].apply(
     lambda x: [item.strip() for item in x.split(";")] if isinstance(x, str) else []
+)
+df = df.assign(
+    stress=lambda x: x.iloc[:, [42, 47, 49, 52, 53, 55, 59]].apply(
+        lambda x: x.sum(), axis=1
+    ),
+    anxiety=lambda x: x.iloc[:, [43, 45, 48, 50, 56, 60, 61]].apply(
+        lambda x: x.sum(), axis=1
+    ),
+    depression=lambda x: x.iloc[:, [44, 46, 51, 54, 57, 58, 62]].apply(
+        lambda x: x.sum(), axis=1
+    ),
+    peace=lambda x: x.iloc[:, [63, 64, 65]].apply(lambda x: x.mean(), axis=1),
+    fear=lambda x: x.iloc[:, [66, 67]].apply(lambda x: x.mean(), axis=1),
+    comfort_of_use=lambda x: x.iloc[:, [73]].apply(lambda x: x.mean(), axis=1),
 )
 
 # %%
@@ -158,5 +176,77 @@ df_23.loc[:, "names"] = df_23.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 
 fig = plot_kids_barhplot(df_23, labels_size=6, female_n=16, male_n=8)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
+)
+# %%
+## During the last 7 days, on how many days did you do vigorus physical activities?
+gdf = df.iloc[:, [1, 24]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf)
+# %%
+## How much time did you usually spend doing vigorous physical activities on one of these days?
+gdf = df.iloc[:, [1, 25]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf)
+# %%
+## During the last 7 days, on how many daysi did you do moderate physical activies?
+gdf = df.iloc[:, [1, 26]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf)
+# %%
+## How much time did you usually spend doing moderate physical activities on one of these days?
+gdf = df.iloc[:, [1, 27]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf)
+# %%
+## During the last 7 days, on how many days did you walk for at least 10 minutes at a time?
+gdf = df.iloc[:, [1, 28]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf)
+# %%
+## How much time did you usually spend walking on one of these days?
+gdf = df.iloc[:, [1, 29]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf)
+# %%
+## During the last 7 days, on how many days did you pend sitting one of these days?
+gdf = df.iloc[:, [1, 30]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf)
+
+# %%
+## At home, how much green space (trees, grasses, flowers, etc.) can you see through the following window(s)?
+gdf = df.iloc[:, [1, 31]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf, font_size=7, wrap_length=20)
+# %%
+## How often (during the day) do you look out through the window(s)?
+gdf = df.iloc[:, [1, 32]].groupby("Gender").value_counts().reset_index()
+
+fig = plot_wearables_barplot(gdf=gdf, wrap_length=15, font_size=7)
+# %%
+## Quality of life
+gdf = df.copy()
+gdf.insert(2, "2 sex", gdf["Gender"])
+fig = plot_likert_barplot(df=gdf, starting_column=34, n_columns=2)
+
+# %%
+## Quality of life
+gdf = df.copy()
+gdf.insert(2, "2 sex", gdf["Gender"])
+fig = plot_likert_barplot(
+    df=gdf, starting_column=36, n_columns=3, legend=False, max_tick=5
+)
+fig2 = plot_likert_barplot(
+    df=gdf, starting_column=39, n_columns=3, legend=False, max_tick=5
+)
+fig3 = plot_likert_barplot(df=gdf, starting_column=42, n_columns=1, max_tick=5)
+# %%
+gdf = df.copy()
+gdf.insert(2, "2 sex", gdf["Gender"])
+fig = plot_likert_barplot(
+    df=gdf, starting_column=69, n_columns=3, legend=False, max_tick=5
+)
+fig = plot_likert_barplot(
+    df=gdf, starting_column=72, n_columns=2, legend=True, max_tick=5
 )
 # %%
