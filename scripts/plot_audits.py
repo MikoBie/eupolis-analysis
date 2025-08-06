@@ -78,6 +78,14 @@ for factor in LIVABILITY:
     )
 
 fig = plot_radar(dt_ord=pireus_all, theta=theta)
+fig.suptitle(
+    t="Pireus Audits",
+    horizontalalignment="center",
+    y=0.85,
+    color="black",
+    weight="bold",
+    size="large",
+)
 fig.tight_layout()
 fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200)
 

@@ -204,7 +204,9 @@ def plot_groups(
     return fig
 
 
-def plot_radar(dt_ord: dict, theta: np.array, colors: dict = COLORS) -> plt.Figure:
+def plot_radar(
+    dt_ord: dict, theta: np.array, colors: dict = COLORS, plot_between: bool = True
+) -> plt.Figure:
     """Plots radar plots.
 
     Parameters
@@ -215,6 +217,8 @@ def plot_radar(dt_ord: dict, theta: np.array, colors: dict = COLORS) -> plt.Figu
         a dictionary with keys blue and green and values hexes of colors, by default COLORS
     theta
         the result of radar_factory; it an array with coordinates in polar
+    plot_between, optional
+        whether to plot the range between min and max values, by default set to True
 
     Returns
     -------
@@ -250,13 +254,14 @@ def plot_radar(dt_ord: dict, theta: np.array, colors: dict = COLORS) -> plt.Figu
                 [np.mean(item) for item in dt_ord[time]["before"].values()],
                 color=colors["blue"],
             )
-            ax.fill_between(
-                theta,
-                process_lst(dt_ord[time]["before"].values(), min),
-                process_lst(dt_ord[time]["before"].values(), max),
-                facecolor=colors["blue"],
-                alpha=0.25,
-            )
+            if plot_between:
+                ax.fill_between(
+                    theta,
+                    process_lst(dt_ord[time]["before"].values(), min),
+                    process_lst(dt_ord[time]["before"].values(), max),
+                    facecolor=colors["blue"],
+                    alpha=0.25,
+                )
             for t, d in zip(
                 theta, process_lst(dt_ord[time]["before"].values(), np.mean)
             ):
