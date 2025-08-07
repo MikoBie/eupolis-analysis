@@ -1,4 +1,10 @@
-COLORS = {"blue": "#13508d", "green": "#70bf58"}
+COLORS = {
+    "blue": "#13508d",
+    "green": "#70bf58",
+    "female": "#70bf58",
+    "male": "#13508d",
+    "prefer not to say": "#1d1d1d",
+}
 
 LIVABILITY = {
     "Multifunctionality": [

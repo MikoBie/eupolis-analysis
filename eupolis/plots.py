@@ -645,3 +645,60 @@ def plot_likert_barplot(
             shadow=True,
         )
     return fig
+
+
+def plot_polish_barplot(
+    gdf: pd.DataFrame, wrap_length: int = 10, font_size: int = 10, COLORS: dict = COLORS
+) -> plt.Figure:
+    """Plot a barplot for three category gender.
+
+    Parameters
+    ----------
+    gdf
+        data from polish questionnaire
+    wrap_length, optional
+        lenght of a string in ax major ticks, by default 10
+    font_size, optional
+        size of the font of a string in ax major ticks, by default 10
+    COLORS, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+
+    Returns
+    -------
+        a matplotlib figure object
+    """
+    gdf = gdf.assign(codes=lambda x: pd.Categorical(x.iloc[:, 1]).codes)
+    major_ticks = dict(zip(gdf.codes, gdf.iloc[:, 1]))
+    location = {"female": -0.25, "male": 0, "prefer not to say": 0.25}
+    fig, axs = plt.subplots(figsize=(4, 4), nrows=1, ncols=1)
+    if isinstance(axs, plt.Axes):
+        axs = [axs]
+    for _, dfg in gdf.groupby("sex"):
+        dfg = dfg.reset_index(drop=True).assign(
+            perc=lambda x: x.loc[:, "count"] / x.loc[:, "count"].sum() * 100,
+            loc=lambda x: x["codes"] + location[_],
+        )
+        rect = axs[0].bar(
+            dfg.loc[:, "loc"].tolist(),
+            dfg.loc[:, "perc"].tolist(),
+            width=0.2,
+            label=f"{_.capitalize()} (n = {dfg.loc[:, 'count'].sum()})",
+            color=COLORS[_],
+        )
+        axs[0].bar_label(rect, fmt=lambda x: f"{int(round(x, 0))}%")
+    axs[0].set_xticks(list(major_ticks))
+    axs[0].yaxis.set_major_formatter(ticker.PercentFormatter())
+    axs[0].xaxis.set_major_formatter(
+        ticker.FuncFormatter(
+            lambda x, pos: "\n".join(wrap(str(major_ticks.get(x, "")), wrap_length))
+        )
+    )
+    for spin in axs[0].spines:
+        if spin != "bottom" and spin != "left":
+            axs[0].spines[spin].set_visible(False)
+    axs[0].set_xticks(list(major_ticks))
+    axs[0].set_ylim(0, 100)
+    axs[0].tick_params(axis="x", which="major", labelsize=font_size)
+    fig.legend(
+        ncol=2, loc="center", bbox_to_anchor=(0.5, -0.07), fancybox=True, shadow=True
+    )
