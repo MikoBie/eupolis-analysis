@@ -230,4 +230,4 @@ def prepare_kids_data(df: pd.DataFrame, column: int) -> pd.DataFrame:
         count = {key: value * 100 / n for key, value in count.items()}
         sex_df = pd.DataFrame({"names": count.keys(), _: count.values()})
         lst.append(sex_df.set_index("names"))
-    return lst[0].join(lst[1], how="outer").reset_index()
+    return lst[0].join(lst[1:], how="outer").reset_index()

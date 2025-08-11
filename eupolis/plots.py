@@ -205,7 +205,11 @@ def plot_groups(
 
 
 def plot_radar(
-    dt_ord: dict, theta: np.array, colors: dict = COLORS, plot_between: bool = True
+    dt_ord: dict,
+    theta: np.array,
+    colors: dict = COLORS,
+    plot_between: bool = True,
+    std: bool = False,
 ) -> plt.Figure:
     """Plots radar plots.
 
@@ -219,6 +223,8 @@ def plot_radar(
         the result of radar_factory; it an array with coordinates in polar
     plot_between, optional
         whether to plot the range between min and max values, by default set to True
+    std
+        whether to plot std based range instead of min, max based range, by default set to False
 
     Returns
     -------
@@ -262,6 +268,21 @@ def plot_radar(
                     facecolor=colors["blue"],
                     alpha=0.25,
                 )
+            if not plot_between and std:
+                ax.fill_between(
+                    theta,
+                    process_lst(
+                        dt_ord[time]["before"].values(),
+                        lambda x: np.mean(x) - np.std(x),
+                    ),
+                    process_lst(
+                        dt_ord[time]["before"].values(),
+                        lambda x: np.mean(x) + np.std(x),
+                    ),
+                    facecolor=colors["blue"],
+                    alpha=0.25,
+                )
+
             for t, d in zip(
                 theta, process_lst(dt_ord[time]["before"].values(), np.mean)
             ):
@@ -702,3 +723,56 @@ def plot_polish_barplot(
     fig.legend(
         ncol=2, loc="center", bbox_to_anchor=(0.5, -0.07), fancybox=True, shadow=True
     )
+
+
+def plot_polish_barhplot(
+    df: pd.DataFrame,
+    COLORS: dict = COLORS,
+    labels_size: int = 10,
+    male_n: int = 6,
+    female_n: int = 10,
+    other_n: int = 3,
+) -> plt.Figure:
+    """Plots a horizontal bar plot for the data prepared by `prepare_data`.
+
+    Parameters
+    ----------
+    df
+        a data frame containing the data
+
+    COLORS, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+
+    Returns
+    -------
+        a matplotlib figure object.
+    """
+    fig, axs = plt.subplots(figsize=(9, 4), nrows=1, ncols=3)
+    rect = axs[0].barh(
+        df["names"], df["male"], color=COLORS["blue"], label=f"Male (n = {male_n})"
+    )
+    axs[0].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
+    axs[0].tick_params(axis="y", which="major", labelsize=labels_size)
+    rect = axs[1].barh(
+        df["names"],
+        df["female"],
+        color=COLORS["green"],
+        label=f"Female (n = {female_n})",
+    )
+    axs[1].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
+    axs[1].set_yticks([])
+    rect = axs[2].barh(
+        df["names"],
+        df["prefer not to say"],
+        color=COLORS["prefer not to say"],
+        label=f"Prefer not to say (n = {other_n})",
+    )
+    axs[2].bar_label(rect, padding=1, fmt=lambda x: f"{int(round(x, 0))}%")
+    axs[2].set_yticks([])
+    for ax in axs:
+        for spin in ax.spines:
+            if spin != "bottom" and spin != "left":
+                ax.spines[spin].set_visible(False)
+        ax.xaxis.set_major_formatter(ticker.PercentFormatter())
+        ax.set_xlim(0, 100)
+    return fig
