@@ -131,7 +131,7 @@ fig = plot_wearables_barplot(gdf=gdf)
 ## Employment status
 gdf = df.iloc[:, [1, 12]].groupby("Gender").value_counts().reset_index()
 
-fig = plot_wearables_barplot(gdf=gdf)
+fig = plot_wearables_barplot(gdf=gdf, wrap_length=10, font_size=8)
 
 # %%
 ## What is the number of people under 18 in your household?
@@ -299,7 +299,7 @@ for key, value in LIVABILITY.items():
     pireus_all[""]["before"][key] = df.loc[:, value]
 
 theta = radar_factory(len(LIVABILITY), frame="polygon")
-fig = plot_radar(dt_ord=pireus_all, theta=theta)
+fig = plot_radar(dt_ord=pireus_all, theta=theta, plot_between=False, std=True)
 fig.suptitle(
     t="Pireus Questionnaire",
     horizontalalignment="center",

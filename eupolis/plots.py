@@ -776,3 +776,94 @@ def plot_polish_barhplot(
         ax.xaxis.set_major_formatter(ticker.PercentFormatter())
         ax.set_xlim(0, 100)
     return fig
+
+
+def plot_polish_likert_barplot(
+    df: pd.DataFrame,
+    starting_column: int,
+    n_columns: int,
+    COLORS: dict = COLORS,
+    legend: bool = True,
+    min_tick: int = 1,
+    max_tick: int = 7,
+) -> plt.Figure:
+    """Plots a bar plot for the likert data.
+
+    Parameters
+    ----------
+    df
+        data from the likert questionnaire.
+    starting_column
+        the index of the first column with likert data.
+    n_columns
+        the number of columns with likert data.
+    COLORS, optional
+        a dictionary with keys blue and green and values hexes of colors, by default COLORS
+    legend, optional
+        a boolean indicating whether to show the legend, by default True
+    max_tick, optional
+        an integer indicating the maximum tick on the x ax, by default 1
+    min_tick, optional
+        an integer indicating the minimum tick on the x ax, by default 7
+
+    Returns
+    -------
+        a matplotlib figure object with the maximum of 3 subplots.
+    """
+    fig, axs = plt.subplots(figsize=(n_columns * 3, 4), nrows=1, ncols=n_columns)
+
+    axs_flat = [axs] if isinstance(axs, plt.Axes) else axs.flat
+    location = {"female": -0.25, "male": 0, "prefer not to say": 0.25}
+
+    for n, ax in enumerate(axs_flat):
+        for _, dfg in df.iloc[:, [74, starting_column + n]].groupby("sex"):
+            dfg = (
+                dfg.value_counts()
+                .reset_index()
+                .assign(
+                    perc=lambda x: x.iloc[:, 2] / x.iloc[:, 2].sum() * 100,
+                    loc=lambda x: x.iloc[:, 1] + location[_],
+                )
+            )
+            rect = ax.bar(
+                dfg.loc[:, "loc"].tolist(),
+                dfg.loc[:, "perc"].tolist(),
+                width=0.2,
+                label=f"{_} (n = {dfg['count'].sum()})",
+                color=COLORS[_],
+            )
+            ax.bar_label(rect, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6)
+            ax.set_ylim(0, 100)
+            ax.yaxis.set_major_formatter(ticker.PercentFormatter())
+            ax.set_xlim(min_tick - 0.5, max_tick + 0.5)
+            ax.set_xticks(list(range(min_tick, max_tick + 1, 1)))
+
+            for spin in ax.spines:
+                if spin != "bottom" and spin != "left":
+                    ax.spines[spin].set_visible(False)
+                elif spin == "left" and n not in [0, 3]:
+                    ax.spines[spin].set_visible(False)
+            if n not in [0, 3]:
+                ax.set_yticks([])
+            ax.set_title(
+                "\n".join(
+                    wrap(
+                        dfg.columns[1].replace("_", " ").strip().capitalize(),
+                        20,
+                    )
+                ),
+                fontsize=10,
+                weight="bold",
+            )
+    handles, labels = ax.get_legend_handles_labels()
+    if legend:
+        fig.legend(
+            handles,
+            labels,
+            ncol=2,
+            loc="center",
+            bbox_to_anchor=(0.5, -0.03),
+            fancybox=True,
+            shadow=True,
+        )
+    return fig

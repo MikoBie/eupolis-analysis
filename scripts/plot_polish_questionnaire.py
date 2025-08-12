@@ -3,12 +3,20 @@ import pandas as pd
 from eupolis import RAW
 from eupolis.utils import prepare_kids_data, rescale_number
 from eupolis.radar import radar_factory
-from eupolis.plots import plot_polish_barplot, plot_polish_barhplot, plot_radar
+from eupolis.plots import (
+    plot_polish_barplot,
+    plot_polish_barhplot,
+    plot_radar,
+    plot_polish_likert_barplot,
+)
 from textwrap import wrap
 from collections import defaultdict
+from eupolis.translation import POLISH_Q
 
 # %%
-df = pd.read_excel(RAW / "lodz" / "euPOLIS_q_form_lodz.xlsm", sheet_name="Data")
+df = pd.read_excel(RAW / "lodz" / "euPOLIS_q_form_lodz.xlsm", sheet_name="Data").rename(
+    columns=POLISH_Q
+)
 df["activities"] = df["activities"].apply(
     lambda x: [item.strip() for item in x.split(";")] if isinstance(x, str) else []
 )
@@ -265,6 +273,7 @@ fig.legend(
 )
 fig.tight_layout()
 # %%
+## LIVABILITY
 LIVABILITY = {
     "Mulitfunctionality": "multifunctionality",
     "Friendliness": "friendliness",
@@ -292,4 +301,15 @@ fig.suptitle(
 )
 fig.tight_layout()
 
+# %%
+## How satisfied are you?
+fig = plot_polish_likert_barplot(df=df, starting_column=53, n_columns=3, legend=False)
+fig2 = plot_polish_likert_barplot(df=df, starting_column=56, n_columns=3, legend=False)
+fig3 = plot_polish_likert_barplot(df=df, starting_column=59, n_columns=2, legend=True)
+
+# %%
+## LIFESTYLE
+fig = plot_polish_likert_barplot(df=df, starting_column=61, n_columns=3, legend=False)
+fig2 = plot_polish_likert_barplot(df=df, starting_column=64, n_columns=3, legend=False)
+fig3 = plot_polish_likert_barplot(df=df, starting_column=68, n_columns=2, legend=True)
 # %%

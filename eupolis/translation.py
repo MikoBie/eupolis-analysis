@@ -394,3 +394,26 @@ KIDS = {
     7: KIDS_5,
     8: KIDS_6,
 }
+
+POLISH_Q = {
+    "satisfaction1": "How satisfied are you with your physical health?",
+    "satisfaction2": "How satisfied are you with your emotional well-being?",
+    "satisfaction3": "How satisfied are you with your relations with family?",
+    "satisfaction4": "How satisfied are you with your relations with friends?",
+    "satisfaction5": "How satisfied are you with your relations with neighbors?",
+    "satisfaction6": "How satisfied are you with your financial situation?",
+    "satisfaction7": "How satisfied are you with how you spend your leisure time?",
+    "satisfaction8": "How satisfied are you with everyday access to nature -- greenery and water?",
+    "lifestyle1": "How often do you com ein contact with urban nature including being among trees and plants, watching birds or small animals?",
+    "lifestyle2": "How often have you been feeling relaxed?",
+    "lifestyle3": "How often have you had energy to spare?",
+    "lifestyle4": "How often have you been feeling close to other people?",
+    "lifestyle5": "How often have you been feeling stressed?",
+    "lifestyle6": "How often have you been feeling lonely?",
+    "lifestyle7": "How often have you been feeling down?",
+    "lifestyle8": "How often have you been sleeping well?",
+    "lifestyle9": "How often have you been able to follow a balanced diet?",
+    "lifestyle10": "How often did you engage in moderate physical activities (carrying light loads, bicycling at a regular pace, nordic walking, etc.)?",
+    "lifestyle11": "How often did you engage in vigorous physical activities (fast runing or cycling, aerobics, heavy lifting)?",
+    "lifestyle12": "How often did you walk for at least 10 minutes at a time?",
+}
