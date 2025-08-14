@@ -13,13 +13,17 @@ df["time_day"] = df["time"].map(lambda x: get_time_label(x))
 # %%
 belgrade = prepare_data(df=df, location="Zemunski", livability=GROUPS)
 lodz = prepare_data(df=df, location="Łódź", livability=GROUPS)
-pileparken = prepare_data(df=df, location="Pileparken", livability=GROUPS)
-pileparken = prepare_data(
+pileparken_before = prepare_data(
+    df=df.query("date < @pd.Timestamp(2025,5,1)"),
+    location="Pileparken",
+    livability=GROUPS,
+)
+pileparken_after = prepare_data(
     df=df,
     location="Pileparken",
     livability=GROUPS,
-    comparison=True,
     after=pd.Timestamp(2025, 5, 1),
+    comparison=True,
 )
 pireus = prepare_data(df=df, location="Akti", livability=GROUPS)
 # %%
@@ -53,23 +57,25 @@ fig.tight_layout()
 fig.savefig(PNG / "lodz_groups.png", dpi=200)
 
 # %%
-fig = plot_groups(dt_ord=pileparken, xlimit=200, comparison=True)
+fig = plot_groups(dt_ord=pileparken_before, xlimit=20, comparison=False)
 fig.suptitle(
-    "Groups of users for different times of the day Pileparken 6",
+    "Groups of users for different times of the day Pileparken 6\n (before the intervention)",
     fontsize=12,
     weight="bold",
 )
 fig.tight_layout()
-fig.savefig(PNG / "gladsaxe_groups.png", dpi=200)
+fig.savefig(PNG / "gladsaxe_before_groups.png", dpi=200)
 
 # %%
 
-fig = plot_groups(dt_ord=pileparken, xlimit=10, comparison=False)
+fig = plot_groups(
+    dt_ord=pileparken_after, xlimit=200, comparison=True, bar_color="blue"
+)
 fig.suptitle(
-    "Groups of users for different times of the day Pileparken 6",
+    "Groups of users for different times of the day Pileparken 6\n (comparison between after and before the intervention)",
     fontsize=12,
     weight="bold",
 )
 fig.tight_layout()
-fig.savefig(PNG / "gladsaxe_groups.png", dpi=200)
+fig.savefig(PNG / "gladsaxe_after_groups.png", dpi=200)
 # %%

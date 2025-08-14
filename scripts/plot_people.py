@@ -17,13 +17,17 @@ df["time_day"] = df["time"].map(lambda x: get_time_label(x))
 # %%
 belgrade = prepare_data(df=df, location="Zemunski", livability=PEOPLE)
 lodz = prepare_data(df=df, location="Łódź", livability=PEOPLE)
-pileparken = prepare_data(df=df, location="Pileparken", livability=PEOPLE)
-pileparken = prepare_data(
+pileparken_before = prepare_data(
+    df=df.query("date < @pd.Timestamp(2025,5,1)"),
+    location="Pileparken",
+    livability=PEOPLE,
+)
+pileparken_after = prepare_data(
     df=df,
     location="Pileparken",
     livability=PEOPLE,
     comparison=True,
-    after=pd.Timestamp(2025, 5, 1),
+    after=pd.Timestamp(2025, 1, 1),
 )
 pireus = prepare_data(df=df, location="Akti", livability=PEOPLE)
 # %%
@@ -79,37 +83,36 @@ fig.savefig(PNG / "belgrade_population.png", dpi=200)
 
 # %%
 fig = plot_barplot(
-    dt_ord=pileparken,
-    ticks=[-250, -100, 0, 100, 250],
-    vertical_lines=[100, 250],
-    comparison=True,
+    dt_ord=pileparken_before,
+    ticks=[-5, 0, 5],
+    vertical_lines=[5],
+    comparison=False,
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Pileparken 6",
+    "Age cohorts of users for different times of the day Pileparken 6\n (before the intervention)",
     fontsize=12,
     weight="bold",
 )
 fig.tight_layout()
-fig.savefig(PNG / "gladsaxe_population.png", dpi=200)
+fig.savefig(PNG / "gladsaxe_before_population.png", dpi=200)
 
 # %%
 fig = plot_barplot(
-    dt_ord=pileparken,
+    dt_ord=pileparken_after,
     ticks=[
-        -5,
+        -200,
         0,
-        5,
+        200,
     ],
-    vertical_lines=[
-        5,
-    ],
+    vertical_lines=[100],
+    comparison=True,
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Pileparken 6",
+    "Age cohorts of users for different times of the day Pileparken 6\n (comparison between before and after the intervention)",
     fontsize=12,
     weight="bold",
 )
 fig.tight_layout()
-fig.savefig(PNG / "gladsaxe_population.png", dpi=200)
+fig.savefig(PNG / "gladsaxe_after_population.png", dpi=200)
 
 # %%

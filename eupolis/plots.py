@@ -85,8 +85,34 @@ def plot_barplot(
             4: "Seniors",
         }
 
-        ax.barh(x.keys(), y_m, color=colors["blue"])
-        ax.barh(x.keys(), y_f, color=colors["green"])
+        rects_male = ax.barh(x.keys(), y_m, color=colors["blue"])
+        rects_female = ax.barh(x.keys(), y_f, color=colors["green"])
+        if comparison:
+            ax.bar_label(
+                rects_male,
+                fmt=lambda x: f"{int(round(abs(x), 0))}%",
+                fontsize=6,
+                padding=1,
+            )
+            ax.bar_label(
+                rects_female,
+                fmt=lambda x: f"{int(round(abs(x), 0))}%",
+                fontsize=6,
+                padding=1,
+            )
+        else:
+            ax.bar_label(
+                rects_male,
+                fmt=lambda x: f"{int(round(abs(x), 0))}",
+                fontsize=6,
+                padding=1,
+            )
+            ax.bar_label(
+                rects_female,
+                fmt=lambda x: f"{int(round(abs(x), 0))}",
+                fontsize=6,
+                padding=1,
+            )
         ax.set_xticks(ticks)
         ax.set_xticklabels([abs(tick) for tick in ticks])
         for spin in ax.spines:
@@ -120,7 +146,10 @@ def plot_barplot(
             ax.axvline(x=item, linestyle="--", color="darkgrey", linewidth=0.5)
             ax.axvline(x=-item, linestyle="--", color="darkgrey", linewidth=0.5)
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
-        ax.set_xlim(-xlimit - 5, xlimit + 5)
+        if comparison:
+            ax.set_xlim(-xlimit - 50, xlimit + 50)
+        else:
+            ax.set_xlim(-xlimit - 5, xlimit + 5)
         if comparison:
             for label in ax.get_xticklabels():
                 if value := float(label.get_text()) < 0:
@@ -134,7 +163,11 @@ def plot_barplot(
 
 
 def plot_groups(
-    dt_ord: dict, colors: dict = COLORS, xlimit: int = 10, comparison: bool = False
+    dt_ord: dict,
+    colors: dict = COLORS,
+    xlimit: int = 10,
+    comparison: bool = False,
+    bar_color: str = "blue",
 ) -> plt.Figure:
     """Plots barplots for groups.
 
@@ -146,6 +179,10 @@ def plot_groups(
         a dictionary with keys blue and green and values hexes of colors, by default COLORS
     xlimit, optional
         the upper limit of x axis, by default 10
+    comparison, optional
+        whether the comparison should be made between before and after the internvetion, by default False
+    bar_color, optional
+        the color of the barplots, by default "blue"
 
     Returns
     -------
@@ -188,7 +225,15 @@ def plot_groups(
         for spin in ax.spines:
             if spin in ["top", "right"]:
                 ax.spines[spin].set_visible(False)
-        ax.barh(dct.keys(), dct.values(), color=colors["blue"])
+        rect = ax.barh(dct.keys(), dct.values(), color=colors[bar_color])
+        if comparison:
+            ax.bar_label(
+                rect, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6, padding=1
+            )
+        else:
+            ax.bar_label(
+                rect, fmt=lambda x: f"{int(round(x, 0))}", fontsize=6, padding=1
+            )
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
         ax.set_xlim(0, xlimit)
         if comparison:
@@ -317,7 +362,7 @@ def plot_radar(
                 ax.text(
                     t,
                     max(a, b) + 0.3,
-                    f"{a - b:.1f}",
+                    f"{((a - b) / b) * 100:.1f}%",
                     horizontalalignment="center",
                     fontsize=6,
                 )
@@ -829,7 +874,7 @@ def plot_polish_likert_barplot(
                 dfg.loc[:, "loc"].tolist(),
                 dfg.loc[:, "perc"].tolist(),
                 width=0.2,
-                label=f"{_} (n = {dfg['count'].sum()})",
+                label=f"{_.capitalize()} (n = {dfg['count'].sum()})",
                 color=COLORS[_],
             )
             ax.bar_label(rect, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6)

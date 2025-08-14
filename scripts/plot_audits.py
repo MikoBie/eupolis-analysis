@@ -19,7 +19,7 @@ from eupolis.radar import radar_factory
 
 import matplotlib.pyplot as plt
 
-plt.rc("savefig", transparent=True)
+plt.rc("savefig", transparent=False)
 # %%
 df = pd.read_excel(RAW / "audits/euPOLIS_sa_form_all.xlsm", sheet_name="Data")
 df["share_nature"] = df["share_nature"].apply(lambda x: share_replace(x))
@@ -256,3 +256,5 @@ for factor in LIVABILITY:
 fig = plot_radar(dt_ord=gladsaxe_all, theta=theta, colors=COLORS_AFTER)
 fig.tight_layout()
 fig.savefig(PNG / "radar_daily_gladsaxe_after.png", dpi=200)
+
+# %%
