@@ -6,7 +6,9 @@ from eupolis.utils import prepare_kids_data
 
 # %%
 df = pd.read_excel(PROC / "kids_pireus.xlsx")
-df[df.columns[1]] = df.loc[:, df.columns[1]].apply(lambda x: [item.strip() for item in x.split(";")])
+df[df.columns[1]] = df.loc[:, df.columns[1]].apply(
+    lambda x: [item.strip() for item in x.split(";")]
+)
 df[df.columns[7]] = df.loc[:, df.columns[7]].apply(
     lambda x: [item.strip() for item in x.split(";")] if isinstance(x, str) else []
 )
@@ -29,7 +31,7 @@ fig.legend(
 ##     f"{df.columns[1].replace('1.', '').strip() + '?'}", fontsize=12, weight="bold"
 ## )
 fig.tight_layout()
-fig.savefig(PNG / "kids_1.png", dpi=200,bbox_inches='tight')
+fig.savefig(PNG / "kids_1.png", dpi=200, bbox_inches="tight")
 # %%
 ## What do you like about the schoolyard?
 df_2 = prepare_kids_data(df, 7).fillna(0).query("names != ''")
@@ -41,7 +43,7 @@ fig.legend(
 )
 ## fig.suptitle(f"{df.columns[7].replace('5.', '').strip()}", fontsize=12, weight="bold")
 fig.tight_layout()
-fig.savefig(PNG / "kids_2.png", dpi=200,bbox_inches='tight')
+fig.savefig(PNG / "kids_2.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## What do you dislike about the schoolyard?
@@ -53,7 +55,7 @@ fig.legend(
 )
 ## fig.suptitle(f"{df.columns[8].replace('6.', '').strip()}", fontsize=12, weight="bold")
 fig.tight_layout()
-fig.savefig(PNG / "kids_3.png", dpi=200,bbox_inches='tight')
+fig.savefig(PNG / "kids_3.png", dpi=200, bbox_inches="tight")
 # %%
 ## While you are in the schoolyard do you spend your time alone of with other kids?
 df.iloc[:, 2].value_counts()
@@ -71,5 +73,5 @@ fig = plot_kids_barplot(df=df)
 ##     "How much do you like the following places (1-5)?", fontsize=12, weight="bold"
 ## )
 fig.tight_layout()
-fig.savefig(PNG / "kids_4.png", dpi=200,bbox_inches='tight')
+fig.savefig(PNG / "kids_4.png", dpi=200, bbox_inches="tight")
 # %%
