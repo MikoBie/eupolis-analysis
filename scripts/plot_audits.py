@@ -56,7 +56,7 @@ lodz = prepare_data(df=df, location="Łódź", livability=LIVABILITY)
 fig = plot_radar(dt_ord=pireus, theta=theta)
 
 fig.suptitle(
-    t="Livability for different times of the day Akti Dilaveri",
+    t="Livability for different times of the day Akti Dilaveri\n(before the intervention)",
     horizontalalignment="center",
     y=0.85,
     color="black",

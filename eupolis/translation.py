@@ -215,7 +215,7 @@ QUESTIONNAIRE_A = {
     "Καθημερινές": "Weekdays",
     "Και τα δύο": "Both",
     "Σαββατοκύριακα": "Weekends",
-    "Μία φορά την εβδομάδα": "Once a day",
+    "Μία φορά την εβδομάδα": "Once a week",
     "Μερικές φορές την εβδομάδα": "A few times a week",
     "Μία φορά το μήνα": "Once a month",
     "Καθημερινά": "Everyday",

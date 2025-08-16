@@ -35,7 +35,7 @@ fig = plot_barplot(
     dt_ord=pireus, ticks=[-50, -25, -10, 0, 10, 25, 50], vertical_lines=[10, 25, 50]
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Akti Dilaveri",
+    "Age cohorts of users for different times of the day Akti Dilaveri\n(before the intervention)",
     fontsize=12,
     weight="bold",
 )

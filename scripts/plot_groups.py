@@ -29,7 +29,7 @@ pireus = prepare_data(df=df, location="Akti", livability=GROUPS)
 # %%
 fig = plot_groups(dt_ord=pireus, xlimit=30)
 fig.suptitle(
-    "Groups of users for different times of the day Akti Dilaveri",
+    "Groups of users for different times of the day Akti Dilaveri\n (before the intervention)",
     fontsize=12,
     weight="bold",
 )
