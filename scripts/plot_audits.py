@@ -94,7 +94,7 @@ fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200)
 fig = plot_radar(dt_ord=lodz, theta=theta)
 
 fig.suptitle(
-    t="Livability for different times of the day Pasaż Rynkowskiej",
+    t="Livability for different times of the day Pasaż Rynkowskiej \n(before the intervention)",
     horizontalalignment="center",
     y=0.85,
     color="black",

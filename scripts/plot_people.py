@@ -45,16 +45,16 @@ fig.savefig(PNG / "akti-dilvaeri_population.png", dpi=200)
 fig = plot_barplot(
     dt_ord=lodz,
     ticks=[
+        -5,
         -10,
         0,
+        5,
         10,
     ],
-    vertical_lines=[
-        10,
-    ],
+    vertical_lines=[10, 5],
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Pasaż Rynkowskiej",
+    "Age cohorts of users for different times of the day Pasaż Rynkowskiej\n(before the intervnetion)",
     fontsize=12,
     weight="bold",
 )

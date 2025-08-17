@@ -49,7 +49,7 @@ fig.savefig(PNG / "belgrade_groups.png", dpi=200)
 # %%
 fig = plot_groups(dt_ord=lodz, xlimit=15)
 fig.suptitle(
-    "Groups of users for different times of the day Pasaż Rynkowskiej",
+    "Groups of users for different times of the day Pasaż Rynkowskiej\n(before the intervention)",
     fontsize=12,
     weight="bold",
 )

@@ -157,7 +157,7 @@ fig.legend(
 
 # %%
 ## Do you smoke?
-gdf = df.iloc[:, [1, 16]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 16]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 # %%
@@ -165,13 +165,11 @@ fig = plot_wearables_barplot(gdf=gdf)
 gdf = df.iloc[:, [101, 17]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(PNG / "greek_q_1.png", dpi=200, bbox_inches="tight")
 # %%
 ## When do you usually visit the demo site?
 gdf = df.iloc[:, [101, 18]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(PNG / "greek_q_2.png", dpi=200, bbox_inches="tight")
 # %%
 ## How often do you usually visit the demo site?
 gdf = df.iloc[:, [101, 19]].groupby("Gender").value_counts().reset_index()
@@ -190,13 +188,11 @@ fig = plot_kids_barhplot(df_20, labels_size=6, female_n=16, male_n=8)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
-fig.savefig(PNG / "greek_q_4.png", dpi=200, bbox_inches="tight")
 # %%
 ## How much time on average do you spend in the demo site per visit?
 gdf = df.iloc[:, [101, 21]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(PNG / "greek_q_5.png", dpi=200, bbox_inches="tight")
 # %%
 ## What do you usually do during the visits to the demo site?
 df_22 = (
@@ -209,7 +205,7 @@ fig = plot_kids_barhplot(df_22, labels_size=6, female_n=16, male_n=8)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
-fig.savefig(PNG / "greek_q_6.png", dpi=200, bbox_inches="tight")
+fig.savefig(PNG / "greek_activities.png", dpi=200, bbox_inches="tight")
 # %%
 ## What urban furniture do you usually use during your visits to the demo site?
 df_23 = (
@@ -222,7 +218,7 @@ fig = plot_kids_barhplot(df_23, labels_size=6, female_n=16, male_n=8)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
-fig.savefig(PNG / "greek_q_7.png", dpi=200, bbox_inches="tight")
+fig.savefig(PNG / "greek_furnitures.png", dpi=200, bbox_inches="tight")
 # %%
 ## During the last 7 days, on how many days did you do vigorus physical activities?
 gdf = df.iloc[:, [1, 24]].groupby("Gender").value_counts().reset_index()
@@ -322,4 +318,5 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
+fig.savefig(PNG / "radar_daily_akti-dilaveri_questionnaire.png", dpi=200)
 # %%

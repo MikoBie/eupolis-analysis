@@ -1,6 +1,6 @@
 # %%
 import pandas as pd
-from eupolis import RAW
+from eupolis import RAW, PNG
 from eupolis.utils import prepare_kids_data, rescale_number
 from eupolis.radar import radar_factory
 from eupolis.plots import (
@@ -262,6 +262,7 @@ fig.legend(
     ncol=3, loc="center", bbox_to_anchor=(0.64, -0.03), fancybox=True, shadow=True
 )
 fig.tight_layout()
+fig.savefig(PNG / "polish_activities.png", dpi=200, bbox_inches="tight")
 # %%
 ## What urban furnitures do you usually use when in the demo site?
 gdf = prepare_kids_data(df.rename(columns={"sex": "Sex"}), 7).fillna(0)
@@ -272,6 +273,7 @@ fig.legend(
     ncol=3, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
 fig.tight_layout()
+fig.savefig(PNG / "polish_furnitures.png", dpi=200, bbox_inches="tight")
 # %%
 ## LIVABILITY
 LIVABILITY = {
@@ -300,7 +302,7 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-
+fig.savefig(PNG / "radar_daily_lodz_questionnaire.png", dpi=200)
 # %%
 ## How satisfied are you?
 fig = plot_polish_likert_barplot(df=df, starting_column=53, n_columns=3, legend=False)
