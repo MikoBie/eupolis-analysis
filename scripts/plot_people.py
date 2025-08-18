@@ -74,7 +74,7 @@ fig = plot_barplot(
     ],
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Zamunski Key",
+    "Age cohorts of users for different times of the day Zamunski Key\n(before the intervention)",
     fontsize=12,
     weight="bold",
 )

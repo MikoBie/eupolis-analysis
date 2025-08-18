@@ -37,9 +37,9 @@ fig.tight_layout()
 fig.savefig(PNG / "akti-dilvaeri_groups.png", dpi=200)
 
 # %%
-fig = plot_groups(dt_ord=belgrade, xlimit=10)
+fig = plot_groups(dt_ord=belgrade, xlimit=15)
 fig.suptitle(
-    "Groups of users for different times of the day Zamunski Key",
+    "Groups of users for different times of the day Zamunski Key\n(before the intervnetion)",
     fontsize=12,
     weight="bold",
 )

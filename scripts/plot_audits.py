@@ -130,7 +130,7 @@ fig.savefig(PNG / "radar_daily_lodz.png", dpi=200)
 fig = plot_radar(dt_ord=belgrade, theta=theta)
 
 fig.suptitle(
-    t="Livability for different times of the day Zamunski Kej",
+    t="Livability for different times of the day Zamunski Kej\n(before the intervention)",
     horizontalalignment="center",
     y=0.85,
     color="black",
