@@ -222,13 +222,12 @@ fig.tight_layout()
 fig.savefig(PNG / "radar_daily_gladsaxe.png", dpi=200)
 
 # %%
-COLORS_AFTER = {"blue": value for value in COLORS.values()}
 gladsaxe = prepare_data(
     df=df.query("date > @pd.Timestamp(2025,5,1)"),
     location="Pileparken",
     livability=LIVABILITY,
 )
-fig = plot_radar(dt_ord=gladsaxe, theta=theta, colors=COLORS_AFTER)
+fig = plot_radar(dt_ord=gladsaxe, theta=theta, colors=COLORS)
 
 fig.suptitle(
     t="Livability for different times of the day Pileparken 6",
@@ -243,7 +242,7 @@ fig.savefig(PNG / "radar_gladsaxe_after.png", dpi=200)
 
 for key, value in gladsaxe.items():
     tmp = {key: value}
-    fig = plot_radar(dt_ord=tmp, theta=theta, colors=COLORS_AFTER)
+    fig = plot_radar(dt_ord=tmp, theta=theta, colors=COLORS)
     fig.tight_layout()
     fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}_after.png", dpi=200)
 
@@ -253,7 +252,7 @@ for factor in LIVABILITY:
         [gladsaxe[time_day]["before"][factor].mean() for time_day in gladsaxe]
     )
 
-fig = plot_radar(dt_ord=gladsaxe_all, theta=theta, colors=COLORS_AFTER)
+fig = plot_radar(dt_ord=gladsaxe_all, theta=theta, colors=COLORS)
 fig.tight_layout()
 fig.savefig(PNG / "radar_daily_gladsaxe_after.png", dpi=200)
 
