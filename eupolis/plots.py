@@ -768,6 +768,7 @@ def plot_polish_barplot(
     fig.legend(
         ncol=2, loc="center", bbox_to_anchor=(0.5, -0.07), fancybox=True, shadow=True
     )
+    return fig
 
 
 def plot_polish_barhplot(
