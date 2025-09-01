@@ -21,3 +21,14 @@ pre-commit install
 ```
 4. Cross fingers.
 
+## Running
+
+Beofre trying to produce graphs please make sure you have the data folder in
+the main directory. Other than that it should be enough to run the following
+(ignore the warnings it will probably print out -- I was too lazy to deal with
+them).
+
+```bash
+bash plot.sh
+```
+

@@ -146,9 +146,7 @@ fig = plot_wearables_barplot(gdf=gdf)
 
 # %%
 ## Non-communicable diseases the numbers are off but not important in my opinion.
-df_15 = prepare_kids_data(df.rename(columns={"Gender": "Sex"}), 15).rename(
-    columns={"female": "Female", "male": "Male"}
-)
+df_15 = prepare_kids_data(df, 15).rename(columns={"female": "Female", "male": "Male"})
 df_15.loc[:, "names"] = df_15.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
 fig = plot_kids_barhplot(df_15, labels_size=6, female_n=16, male_n=8)
 fig.legend(
@@ -221,48 +219,48 @@ fig.legend(
 fig.savefig(PNG / "greek_furnitures.png", dpi=200, bbox_inches="tight")
 # %%
 ## During the last 7 days, on how many days did you do vigorus physical activities?
-gdf = df.iloc[:, [1, 24]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 24]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 # %%
 ## How much time did you usually spend doing vigorous physical activities on one of these days?
-gdf = df.iloc[:, [1, 25]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 25]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 # %%
 ## During the last 7 days, on how many daysi did you do moderate physical activies?
-gdf = df.iloc[:, [1, 26]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 26]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 # %%
 ## How much time did you usually spend doing moderate physical activities on one of these days?
-gdf = df.iloc[:, [1, 27]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 27]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 # %%
 ## During the last 7 days, on how many days did you walk for at least 10 minutes at a time?
-gdf = df.iloc[:, [1, 28]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 28]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 # %%
 ## How much time did you usually spend walking on one of these days?
-gdf = df.iloc[:, [1, 29]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 29]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 # %%
 ## During the last 7 days, on how many days did you pend sitting one of these days?
-gdf = df.iloc[:, [1, 30]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 30]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 
 # %%
 ## At home, how much green space (trees, grasses, flowers, etc.) can you see through the following window(s)?
-gdf = df.iloc[:, [1, 31]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 31]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf, font_size=7, wrap_length=20)
 # %%
 ## How often (during the day) do you look out through the window(s)?
-gdf = df.iloc[:, [1, 32]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [101, 32]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf, wrap_length=15, font_size=7)
 # %%
