@@ -14,6 +14,7 @@ from collections import defaultdict
 from eupolis.translation import POLISH_Q
 
 # %%
+POL = PNG / "polish_questionnaire"
 df = pd.read_excel(RAW / "lodz" / "euPOLIS_q_form_lodz.xlsm", sheet_name="Data").rename(
     columns=POLISH_Q
 )
@@ -138,6 +139,7 @@ fig.legend(
     ncol=3, loc="center", bbox_to_anchor=(0.64, -0.03), fancybox=True, shadow=True
 )
 fig.tight_layout()
+fig.savefig(POL / "minority_group.png", dpi=200, bbox_inches="tight")
 # %%
 ## Religious group
 gdf = (
@@ -147,6 +149,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=11, font_size=8)
+fig.savefig(POL / "religious_group.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Education
@@ -157,6 +160,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(POL / "education.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Employment
@@ -167,6 +171,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(POL / "employment.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Hosehold memebers
@@ -177,6 +182,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(POL / "household_members.png", dpi=200, bbox_inches="tight")
 # %%
 ## Hosehold memebers under 18
 gdf = (
@@ -186,6 +192,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(POL / "household_members_under_18.png", dpi=200, bbox_inches="tight")
 # %%
 ## Hosehold memebers under 3
 gdf = (
@@ -195,6 +202,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(POL / "household_members_under_3.png", dpi=200, bbox_inches="tight")
 # %%
 ## Martial status
 gdf = (
@@ -204,6 +212,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=15, font_size=8)
+fig.savefig(POL / "martial_status.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Distance to the demo site
@@ -214,6 +223,7 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(POL / "distance_to_the_demo_site.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## On which days do you visit the demo site?
@@ -224,6 +234,9 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10)
+fig.savefig(
+    POL / "on_which_days_do_you_visit_the_demo_site.png", dpi=200, bbox_inches="tight"
+)
 # %%
 ## How often do you visit the demo site?
 gdf = (
@@ -233,6 +246,9 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(
+    POL / "how_often_do_you_visit_the_demo_site.png", dpi=200, bbox_inches="tight"
+)
 # %%
 ## What time during the day you usually visit the demo site?
 gdf = (
@@ -242,6 +258,11 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(
+    POL / "what_time_during_the_day_you_usually_visit_the_demo_site.png",
+    dpi=200,
+    bbox_inches="tight",
+)
 
 # %%
 ## How much time do you usually spend in the demo site during your visits?
@@ -252,6 +273,11 @@ gdf = (
 )
 
 fig = plot_polish_barplot(gdf=gdf, wrap_length=10, font_size=8)
+fig.savefig(
+    POL / "how_much_time_do_you_usually_spend_in_the_demo_site_during_your_visits.png",
+    dpi=200,
+    bbox_inches="tight",
+)
 # %%
 ## What do you do usually do in the demo site?
 gdf = prepare_kids_data(df.rename(columns={"sex": "Sex"}), 6).fillna(0)
@@ -262,7 +288,9 @@ fig.legend(
     ncol=3, loc="center", bbox_to_anchor=(0.64, -0.03), fancybox=True, shadow=True
 )
 fig.tight_layout()
-fig.savefig(PNG / "polish_activities.png", dpi=200, bbox_inches="tight")
+fig.savefig(
+    POL / "what_do_you_do_usually_in_the_demo_site.png", dpi=200, bbox_inches="tight"
+)
 # %%
 ## What urban furnitures do you usually use when in the demo site?
 gdf = prepare_kids_data(df.rename(columns={"sex": "Sex"}), 7).fillna(0)
@@ -273,7 +301,11 @@ fig.legend(
     ncol=3, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
 fig.tight_layout()
-fig.savefig(PNG / "polish_furnitures.png", dpi=200, bbox_inches="tight")
+fig.savefig(
+    POL / "what_urban_furnitures_do_you_usually_use_when_in_the_demo_site.png",
+    dpi=200,
+    bbox_inches="tight",
+)
 # %%
 ## LIVABILITY
 LIVABILITY = {
@@ -302,16 +334,22 @@ fig.suptitle(
     size="large",
 )
 fig.tight_layout()
-fig.savefig(PNG / "radar_daily_lodz_questionnaire.png", dpi=200)
+fig.savefig(POL / "radar_daily_lodz_questionnaire.png", dpi=200)
 # %%
 ## How satisfied are you?
 fig = plot_polish_likert_barplot(df=df, starting_column=53, n_columns=3, legend=False)
+fig.savefig(POL / "how_satisfied_are_you.png", dpi=200, bbox_inches="tight")
 fig2 = plot_polish_likert_barplot(df=df, starting_column=56, n_columns=3, legend=False)
+fig2.savefig(POL / "how_satisfied_are_you_2.png", dpi=200, bbox_inches="tight")
 fig3 = plot_polish_likert_barplot(df=df, starting_column=59, n_columns=2, legend=True)
+fig3.savefig(POL / "how_satisfied_are_you_3.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## LIFESTYLE
 fig = plot_polish_likert_barplot(df=df, starting_column=61, n_columns=3, legend=False)
+fig.savefig(POL / "lifestyle.png", dpi=200, bbox_inches="tight")
 fig2 = plot_polish_likert_barplot(df=df, starting_column=64, n_columns=3, legend=False)
+fig2.savefig(POL / "lifestyle2.png", dpi=200, bbox_inches="tight")
 fig3 = plot_polish_likert_barplot(df=df, starting_column=68, n_columns=2, legend=True)
+fig3.savefig(POL / "lifestyle3.png", dpi=200, bbox_inches="tight")
 # %%
