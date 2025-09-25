@@ -1,6 +1,6 @@
 # `euPOLIS`
 
-Scripts to analys data from from the euPOLIS project.
+Scripts to analyze data from from the euPOLIS project.
 
 ## Main dependencies
 
@@ -23,7 +23,7 @@ pre-commit install
 
 ## Running
 
-Beofre trying to produce graphs please make sure you have the data folder in
+Before trying to produce graphs please make sure you have the data folder in
 the main directory. Other than that it should be enough to run the following
 (ignore the warnings it will probably print out -- I was too lazy to deal with
 them).
@@ -31,4 +31,9 @@ them).
 ```bash
 bash plot.sh
 ```
+
+## Funding
+
+The euPOLIS project has received funding from the European Union’s Horizon 2020
+Research & Innovation programme H2020-EU.3.5.2., under grant agreement No 869448
 
