@@ -50,7 +50,13 @@ gladsaxe = prepare_data(
     after=pd.Timestamp(2025, 5, 1),
 )
 belgrade = prepare_data(df=df, location="Zemunski", livability=LIVABILITY)
-lodz = prepare_data(df=df, location="Łódź", livability=LIVABILITY)
+lodz = prepare_data(
+    df=df,
+    location="Łódź",
+    livability=LIVABILITY,
+    comparison=True,
+    after=pd.Timestamp(2025, 9, 1),
+)
 
 # %%
 fig = plot_radar(dt_ord=pireus, theta=theta)
@@ -94,7 +100,7 @@ fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200)
 fig = plot_radar(dt_ord=lodz, theta=theta)
 
 fig.suptitle(
-    t="Livability for different times of the day Pasaż Rynkowskiej \n(before the intervention)",
+    t="Livability for different times of the day Pasaż Rynkowskiej",
     horizontalalignment="center",
     y=0.85,
     color="black",
