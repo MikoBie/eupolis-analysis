@@ -166,7 +166,6 @@ def plot_groups(
     dt_ord: dict,
     colors: dict = COLORS,
     xlimit: int = 10,
-    comparison: bool = False,
     bar_color: str = "blue",
 ) -> plt.Figure:
     """Plots barplots for groups.
@@ -213,11 +212,6 @@ def plot_groups(
                 dct_mn[key][_] = np.mean(value)
 
         dct = {map_groups[key]: float(value["before"]) for key, value in dct_mn.items()}
-        if comparison:
-            dct = {
-                map_groups[key]: 100 * float(value["after"]) / float(value["before"])
-                for key, value in dct_mn.items()
-            }
 
         dct = {key: value if value == value else 0 for key, value in dct.items()}
         if time != "Morning":
@@ -226,32 +220,19 @@ def plot_groups(
             if spin in ["top", "right"]:
                 ax.spines[spin].set_visible(False)
         rect = ax.barh(dct.keys(), dct.values(), color=colors[bar_color])
-        if comparison:
-            ax.bar_label(
-                rect, fmt=lambda x: f"{int(round(x, 0))}%", fontsize=6, padding=1
-            )
-        else:
-            ax.bar_label(
-                rect, fmt=lambda x: f"{int(round(x, 0))}", fontsize=6, padding=1
-            )
+        ax.bar_label(rect, fmt=lambda x: f"{int(round(x, 0))}", fontsize=6, padding=1)
         ax.set_title(time, horizontalalignment="center", y=1.01, size=10, weight="bold")
         ax.set_xlim(0, xlimit)
-        if comparison:
-            ax.set_xticks([0, 100, 200])
-            for label in ax.get_xticklabels():
-                if value := float(label.get_text()) < 0:
-                    label.set_text(f"{abs(value)}%")
-            ax.xaxis.set_major_formatter(ticker.FuncFormatter(fmt_percent))
-        else:
-            for label in ax.get_xticklabels():
-                if value := float(label.get_text()) < 0:
-                    label.set_text(abs(value))
+        for label in ax.get_xticklabels():
+            if value := float(label.get_text()) < 0:
+                label.set_text(abs(value))
     return fig
 
 
 def plot_radar(
     dt_ord: dict,
     theta: np.array,
+    distance: dict,
     colors: dict = COLORS,
     plot_between: bool = True,
     std: bool = False,
@@ -270,7 +251,8 @@ def plot_radar(
         whether to plot the range between min and max values, by default set to True
     std
         whether to plot std based range instead of min, max based range, by default set to False
-
+    distance, optional
+        a dictionary with keys as dimensions and values as distances between label and the plot, by default {}
     Returns
     -------
         radar plots
@@ -342,6 +324,9 @@ def plot_radar(
                     "horizontalalignment": "center",
                 },
             )
+            for label in ax.get_xticklabels():
+                if label.get_text() == "Multifunctionality":
+                    label.set_position([0, 0.12])
         else:
             ax.plot(
                 theta,
@@ -354,29 +339,25 @@ def plot_radar(
                 color=colors["green"],
             )
 
-            for t, b, a in zip(
-                theta,
+            labels = []
+            for d, b, a in zip(
+                distance,
                 process_lst(dt_ord[time]["before"].values(), np.mean),
                 process_lst(dt_ord[time]["after"].values(), np.mean),
             ):
-                ax.text(
-                    t,
-                    max(a, b) + 0.3,
-                    f"{((a - b) / b) * 100:.1f}%",
-                    horizontalalignment="center",
-                    fontsize=6,
-                )
+                labels.append(f"{d}\n({((a - b) / b) * 100:.1f}%)")
             ax.set_varlabels(
-                dt_ord[time]["before"].keys(),
+                labels,
                 kwargs={
                     "fontsize": 6,
                     "verticalalignment": "center",
                     "horizontalalignment": "center",
                 },
             )
-        for label in ax.get_xticklabels():
-            if label.get_text() == "Multifunctionality":
-                label.set_position([0, 0.12])
+            for label in ax.get_xticklabels():
+                label.set_position(
+                    distance.get(label.get_text().split("\n(")[0], [0, -0.1])
+                )
     return fig
 
 

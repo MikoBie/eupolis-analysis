@@ -55,3 +55,13 @@ GROUPS = {
     "bike": ["bike"],
     "other": ["other"],
 }
+
+DISTANCE = {
+    "Mulifunctionality": [0, 0.1],
+    "Friendliness": [0, 0],
+    "Comfort\n of use": [0, -0.08],
+    "Sense of\n safety": [0, -0.00],
+    "Sense of\n place": [0, 0],
+    "Contact \nwith nature": [0, -0.05],
+    "Walkability": [0, -0.01],
+}

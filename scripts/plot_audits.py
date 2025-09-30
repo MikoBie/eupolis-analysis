@@ -12,7 +12,7 @@ from eupolis.utils import (
     rescale_number,
 )
 from eupolis.plots import plot_radar
-from eupolis.config import LIVABILITY, COLORS
+from eupolis.config import LIVABILITY, COLORS, DISTANCE
 from collections import defaultdict
 
 from eupolis.radar import radar_factory
@@ -59,7 +59,7 @@ lodz = prepare_data(
 )
 
 # %%
-fig = plot_radar(dt_ord=pireus, theta=theta)
+fig = plot_radar(dt_ord=pireus, theta=theta, distance=DISTANCE)
 
 fig.suptitle(
     t="Livability for different times of the day Akti Dilaveri\n(before the intervention)",
@@ -73,7 +73,7 @@ fig.tight_layout()
 fig.savefig(PNG / "radar_akti-dilaveri.png", dpi=200)
 for key, value in pireus.items():
     tmp = {key: value}
-    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig = plot_radar(dt_ord=tmp, theta=theta, distance=DISTANCE)
     fig.tight_layout()
     fig.savefig(PNG / f"radar_akti-dilaveri_{key.lower()}.png", dpi=200)
 
@@ -83,7 +83,7 @@ for factor in LIVABILITY:
         [pireus[time_day]["before"][factor].mean() for time_day in pireus]
     )
 
-fig = plot_radar(dt_ord=pireus_all, theta=theta)
+fig = plot_radar(dt_ord=pireus_all, theta=theta, distance=DISTANCE)
 fig.suptitle(
     t="Pireus Audits",
     horizontalalignment="center",
@@ -97,7 +97,7 @@ fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200)
 
 
 # %%
-fig = plot_radar(dt_ord=lodz, theta=theta)
+fig = plot_radar(dt_ord=lodz, theta=theta, distance=DISTANCE)
 
 fig.suptitle(
     t="Livability for different times of the day Pasaż Rynkowskiej",
@@ -111,7 +111,7 @@ fig.tight_layout()
 fig.savefig(PNG / "radar_lodz.png", dpi=200)
 for key, value in lodz.items():
     tmp = {key: value}
-    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig = plot_radar(dt_ord=tmp, theta=theta, distance=DISTANCE)
     fig.tight_layout()
     fig.savefig(PNG / f"radar_lodz_{key.lower()}.png", dpi=200)
 
@@ -121,7 +121,7 @@ for factor in LIVABILITY:
         [lodz[time_day]["before"][factor].mean() for time_day in lodz]
     )
 
-fig = plot_radar(dt_ord=lodz_all, theta=theta)
+fig = plot_radar(dt_ord=lodz_all, theta=theta, distance=DISTANCE)
 fig.suptitle(
     t="Łódź Audits",
     horizontalalignment="center",

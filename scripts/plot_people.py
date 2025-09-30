@@ -16,7 +16,12 @@ df = pd.read_excel(RAW / "audits/euPOLIS_sa_form_all.xlsm", sheet_name="Data")
 df["time_day"] = df["time"].map(lambda x: get_time_label(x))
 # %%
 belgrade = prepare_data(df=df, location="Zemunski", livability=PEOPLE)
-lodz = prepare_data(df=df, location="Łódź", livability=PEOPLE)
+lodz_before = prepare_data(
+    df=df.query("date < @pd.Timestamp(2025,5,1)"), location="Łódź", livability=PEOPLE
+)
+lodz_after = prepare_data(
+    df=df.query("date > @pd.Timestamp(2025,5,1)"), location="Łódź", livability=PEOPLE
+)
 pileparken_before = prepare_data(
     df=df.query("date < @pd.Timestamp(2025,5,1)"),
     location="Pileparken",
@@ -43,7 +48,7 @@ fig.tight_layout()
 fig.savefig(PNG / "akti-dilvaeri_population.png", dpi=200)
 # %%
 fig = plot_barplot(
-    dt_ord=lodz,
+    dt_ord=lodz_before,
     ticks=[
         -5,
         -10,
@@ -61,6 +66,25 @@ fig.suptitle(
 fig.tight_layout()
 fig.savefig(PNG / "lodz_population.png", dpi=200)
 
+# %%
+fig = plot_barplot(
+    dt_ord=lodz_after,
+    ticks=[
+        -5,
+        -10,
+        0,
+        5,
+        10,
+    ],
+    vertical_lines=[10, 5],
+)
+fig.suptitle(
+    "Age cohorts of users for different times of the day Pasaż Rynkowskiej\n (after the intervention)",
+    fontsize=12,
+    weight="bold",
+)
+fig.tight_layout()
+fig.savefig(PNG / "gladsaxe_after_population.png", dpi=200)
 # %%
 fig = plot_barplot(
     dt_ord=belgrade,
