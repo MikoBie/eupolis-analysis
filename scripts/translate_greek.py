@@ -19,13 +19,20 @@ import re
 
 
 # %%
-def translate_wearables():
-    """Translates the questions and answers of the wearables questionnaire."""
-    df = pd.read_csv(RAW / "pireus" / "euPOLIS Piraeus Questionaire-Wearables.csv")
+def translate_wearables(df: pd.DataFrame, output_name: str = "wearables_pireus.xlsx"):
+    """Translates the questions and answers of the wearables questionnaire.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The dataframe to translate.
+    output_name : str, optional
+        The name of the output file, by default "wearables_pireus.xlsx".
+    """
     df = df.rename(columns=lambda x: rename_columns(x)).map(
         lambda x: WEARABLES_A.get(strip_string(x), strip_string(x))
     )
-    df.to_excel(PROC / "wearables_pireus.xlsx", index=False)
+    df.to_excel(PROC / output_name, index=False)
 
 
 def translate_questionnaire():
@@ -61,7 +68,12 @@ def process_kids():
 
 
 def main():
-    translate_wearables()
+    df = pd.read_csv(RAW / "pireus" / "euPOLIS Piraeus Questionaire-Wearables.csv")
+    translate_wearables(df=df)
+    df_after = pd.read_csv(
+        RAW / "pireus" / "euPOLIS Piraeus Questionaire-Wearables-Final 26-9-2025.csv"
+    )
+    translate_wearables(df=df_after, output_name="wearables_pireus_after.xlsx")
     translate_questionnaire()
     process_kids()
 
