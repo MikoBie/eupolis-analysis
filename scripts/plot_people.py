@@ -28,11 +28,9 @@ pileparken_before = prepare_data(
     livability=PEOPLE,
 )
 pileparken_after = prepare_data(
-    df=df,
+    df=df.query("date > @pd.Timestamp(2025,5,1)"),
     location="Pileparken",
     livability=PEOPLE,
-    comparison=True,
-    after=pd.Timestamp(2025, 1, 1),
 )
 pireus = prepare_data(df=df, location="Akti", livability=PEOPLE)
 # %%
@@ -84,7 +82,7 @@ fig.suptitle(
     weight="bold",
 )
 fig.tight_layout()
-fig.savefig(PNG / "gladsaxe_after_population.png", dpi=200)
+fig.savefig(PNG / "lodz_after_population.png", dpi=200)
 # %%
 fig = plot_barplot(
     dt_ord=belgrade,
@@ -123,16 +121,11 @@ fig.savefig(PNG / "gladsaxe_before_population.png", dpi=200)
 # %%
 fig = plot_barplot(
     dt_ord=pileparken_after,
-    ticks=[
-        -200,
-        0,
-        200,
-    ],
-    vertical_lines=[100],
-    comparison=True,
+    ticks=[-5, 0, 5],
+    vertical_lines=[5],
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Pileparken 6\n (comparison between before and after the intervention)",
+    "Age cohorts of users for different times of the day Pileparken 6\n (after the intervention)",
     fontsize=12,
     weight="bold",
 )
