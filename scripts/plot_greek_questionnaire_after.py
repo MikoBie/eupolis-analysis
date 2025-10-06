@@ -14,9 +14,10 @@ from collections import defaultdict
 from eupolis.config import DISTANCE
 
 # %%
-GREEK = PNG / "mikrolimano_questionnaire"
-df = pd.read_excel(PROC / "questionnaire_pireus.xlsx")
-df["Gender"] = df["Sex"].apply(lambda x: x.strip().lower())
+GREEK = PNG / "mikrolimano_questionnaire_after"
+df = pd.read_excel(PROC / "questionnaire_pireus_after.xlsx")
+df["Gender"] = df["Gender"].apply(lambda x: x.strip().lower())
+df["Sex"] = df["Gender"].apply(lambda x: x.strip().lower())
 df[df.columns[15]] = df[df.columns[15]].apply(
     lambda x: [item.strip() for item in x.split(",")] if isinstance(x, str) else []
 )
@@ -102,7 +103,7 @@ fig.savefig(GREEK / "martial_status.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Household income compare to the country average
-gdf = df.iloc[:, [101, 4]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 4]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -112,21 +113,21 @@ fig.savefig(
 )
 # %%
 ## Education level
-gdf = df.iloc[:, [101, 5]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 5]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(GREEK / "education_level.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Type of housing
-gdf = df.iloc[:, [101, 6]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 6]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(GREEK / "type_housing.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Number of members in the household
-gdf = df.iloc[:, [101, 7]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 7]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -134,24 +135,24 @@ fig.savefig(
 )
 # %%
 ## Do you consider yourself to be a part of minority
-df.iloc[:, [101, 8]].groupby("Gender").value_counts().reset_index()
+df.iloc[:, [1, 8]].groupby("Gender").value_counts().reset_index()
 
 # %%
 ## Disability -- The only answer seems to be a joke
-gdf = df.iloc[:, [101, 10]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 10]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(GREEK / "disability.png", dpi=200, bbox_inches="tight")
 # %%
 ## Employment status
-gdf = df.iloc[:, [101, 12]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 12]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf, wrap_length=10, font_size=8)
 fig.savefig(GREEK / "employment_status.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## What is the number of people under 18 in your household?
-gdf = df.iloc[:, [101, 13]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 13]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -161,7 +162,7 @@ fig.savefig(
 )
 # %%
 ## How many children under 3 do you have?
-gdf = df.iloc[:, [101, 14]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 14]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -176,7 +177,7 @@ df_15 = (
     .fillna(0)
 )
 df_15.loc[:, "names"] = df_15.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_15, labels_size=6, female_n=16, male_n=8)
+fig = plot_kids_barhplot(df_15, labels_size=6, female_n=30, male_n=16)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
@@ -184,13 +185,13 @@ fig.savefig(GREEK / "non_communicable_diseases.png", dpi=200, bbox_inches="tight
 
 # %%
 ## Do you smoke?
-gdf = df.iloc[:, [101, 16]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 16]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(GREEK / "do_you_smoke.png", dpi=200, bbox_inches="tight")
 # %%
 ## How far away do you live from the demo site?
-gdf = df.iloc[:, [101, 17]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 17]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -200,7 +201,7 @@ fig.savefig(
 )
 # %%
 ## When do you usually visit the demo site?
-gdf = df.iloc[:, [101, 18]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 18]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -210,7 +211,7 @@ fig.savefig(
 )
 # %%
 ## How often do you usually visit the demo site?
-gdf = df.iloc[:, [101, 19]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 19]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf, font_size=8)
 fig.savefig(
@@ -226,7 +227,7 @@ df_20 = (
     .fillna(0)
 )
 df_20.loc[:, "names"] = df_20.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_20, labels_size=6, female_n=16, male_n=8)
+fig = plot_kids_barhplot(df_20, labels_size=6, female_n=30, male_n=16)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
@@ -237,7 +238,7 @@ fig.savefig(
 )
 # %%
 ## How much time on average do you spend in the demo site per visit?
-gdf = df.iloc[:, [101, 21]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 21]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -253,7 +254,7 @@ df_22 = (
     .fillna(0)
 )
 df_22.loc[:, "names"] = df_22.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_22, labels_size=6, female_n=16, male_n=8)
+fig = plot_kids_barhplot(df_22, labels_size=6, female_n=30, male_n=16)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
@@ -270,7 +271,7 @@ df_23 = (
     .fillna(0)
 )
 df_23.loc[:, "names"] = df_23.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_23, labels_size=6, female_n=16, male_n=8)
+fig = plot_kids_barhplot(df_23, labels_size=6, female_n=30, male_n=16)
 fig.legend(
     ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
 )
@@ -282,7 +283,7 @@ fig.savefig(
 )
 # %%
 ## During the last 7 days, on how many days did you do vigorus physical activities?
-gdf = df.iloc[:, [101, 24]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 24]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -293,7 +294,7 @@ fig.savefig(
 )
 # %%
 ## How much time did you usually spend doing vigorous physical activities on one of these days?
-gdf = df.iloc[:, [101, 25]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 25]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -304,7 +305,7 @@ fig.savefig(
 )
 # %%
 ## During the last 7 days, on how many daysi did you do moderate physical activies?
-gdf = df.iloc[:, [101, 26]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 26]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -315,7 +316,7 @@ fig.savefig(
 )
 # %%
 ## How much time did you usually spend doing moderate physical activities on one of these days?
-gdf = df.iloc[:, [101, 27]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 27]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -326,7 +327,7 @@ fig.savefig(
 )
 # %%
 ## During the last 7 days, on how many days did you walk for at least 10 minutes at a time?
-gdf = df.iloc[:, [101, 28]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 28]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -337,7 +338,7 @@ fig.savefig(
 )
 # %%
 ## How much time did you usually spend walking on one of these days?
-gdf = df.iloc[:, [101, 29]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 29]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -347,7 +348,7 @@ fig.savefig(
 )
 # %%
 ## During the last 7 days, on how many days did you pend sitting one of these days?
-gdf = df.iloc[:, [101, 30]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 30]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf)
 fig.savefig(
@@ -359,7 +360,7 @@ fig.savefig(
 
 # %%
 ## At home, how much green space (trees, grasses, flowers, etc.) can you see through the following window(s)?
-gdf = df.iloc[:, [101, 31]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 31]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf, font_size=7, wrap_length=20)
 fig.savefig(
@@ -369,7 +370,7 @@ fig.savefig(
 )
 # %%
 ## How often (during the day) do you look out through the window(s)?
-gdf = df.iloc[:, [101, 32]].groupby("Gender").value_counts().reset_index()
+gdf = df.iloc[:, [1, 32]].groupby("Gender").value_counts().reset_index()
 
 fig = plot_wearables_barplot(gdf=gdf, wrap_length=15, font_size=7)
 fig.savefig(
@@ -427,7 +428,7 @@ for key, value in LIVABILITY.items():
 
 theta = radar_factory(len(LIVABILITY), frame="polygon")
 fig = plot_radar(
-    dt_ord=pireus_all, theta=theta, plot_between=False, std=True, distance=DISTANCE
+    dt_ord=pireus_all, distance=DISTANCE, theta=theta, plot_between=False, std=True
 )
 fig.suptitle(
     t="Pireus Questionnaire",

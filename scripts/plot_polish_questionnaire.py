@@ -12,6 +12,7 @@ from eupolis.plots import (
 from textwrap import wrap
 from collections import defaultdict
 from eupolis.translation import POLISH_Q
+from eupolis.config import DISTANCE
 
 # %%
 POL = PNG / "polish_questionnaire"
@@ -324,7 +325,9 @@ for key, value in LIVABILITY.items():
     pireus_all[""]["before"][key] = df.loc[:, value]
 
 theta = radar_factory(len(LIVABILITY), frame="polygon")
-fig = plot_radar(dt_ord=pireus_all, theta=theta, plot_between=False, std=True)
+fig = plot_radar(
+    dt_ord=pireus_all, theta=theta, distance=DISTANCE, plot_between=False, std=True
+)
 fig.suptitle(
     t="Łódź Questionnaire",
     horizontalalignment="center",

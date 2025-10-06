@@ -35,10 +35,19 @@ def translate_wearables(df: pd.DataFrame, output_name: str = "wearables_pireus.x
     df.to_excel(PROC / output_name, index=False)
 
 
-def translate_questionnaire():
-    """Translates the questions and answers of the Greek questionnaire."""
+def translate_questionnaire(
+    df: pd.DataFrame, output_name: str = "questionnaire_pireus.xlsx"
+):
+    """Translates the questions and answers of the Greek questionnaire.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The dataframe to translate.
+    output_name : str, optional
+        The name of the output file, by default "questionnaire_pireus.xlsx".
+    """
     rgx = re.compile(r",\s(?=[Α-Ω])")
-    df = pd.read_excel(RAW / "pireus" / "euPOLIS Piraeus Questionaire (Responses).xlsx")
     df = df.rename(columns=lambda x: QUESTIONNAIRE_Q.get(x, x)).map(
         lambda x: "; ".join(QUESTIONNAIRE_A.get(item, item) for item in rgx.split(x))
         if isinstance(x, str)
@@ -51,7 +60,7 @@ def translate_questionnaire():
     df.iloc[:, 68:73] = df.iloc[:, 68:73].map(lambda x: ENCOURAGEMENT_A.get(x, x))
     df.iloc[:, 73:84] = df.iloc[:, 73:84].map(lambda x: MAINTENANCE_A.get(x, x))
     df.iloc[:, 84:] = df.iloc[:, 84:].map(lambda x: OTHER_A.get(x, x))
-    df.to_excel(PROC / "questionnaire_pireus.xlsx", index=False)
+    df.to_excel(PROC / output_name, index=False)
 
 
 def process_kids():
@@ -74,7 +83,14 @@ def main():
         RAW / "pireus" / "euPOLIS Piraeus Questionaire-Wearables-Final 26-9-2025.csv"
     )
     translate_wearables(df=df_after, output_name="wearables_pireus_after.xlsx")
-    translate_questionnaire()
+    df = pd.read_excel(RAW / "pireus" / "euPOLIS Piraeus Questionaire (Responses).xlsx")
+    translate_questionnaire(df=df)
+    df = pd.read_excel(
+        RAW
+        / "pireus"
+        / "euPOLIS Piraeus Questionaire Sept 26 - After Interventions (Responses).xlsx"
+    )
+    translate_questionnaire(df=df, output_name="questionnaire_pireus_after.xlsx")
     process_kids()
 
 

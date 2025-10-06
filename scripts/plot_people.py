@@ -57,7 +57,7 @@ fig = plot_barplot(
     vertical_lines=[10, 5],
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Pasaż Rynkowskiej\n(before the intervnetion)",
+    "Age cohorts of users for different times of the day Linear Park\n(before the intervnetion)",
     fontsize=12,
     weight="bold",
 )
@@ -77,7 +77,7 @@ fig = plot_barplot(
     vertical_lines=[10, 5],
 )
 fig.suptitle(
-    "Age cohorts of users for different times of the day Pasaż Rynkowskiej\n (after the intervention)",
+    "Age cohorts of users for different times of the day Linear Park\n (after the intervention)",
     fontsize=12,
     weight="bold",
 )

@@ -100,7 +100,7 @@ fig.savefig(PNG / "radar_daily_akti-dilaveri.png", dpi=200)
 fig = plot_radar(dt_ord=lodz, theta=theta, distance=DISTANCE)
 
 fig.suptitle(
-    t="Livability for different times of the day Pasaż Rynkowskiej",
+    t="Livability for different times of the day Linear Park",
     horizontalalignment="center",
     y=0.85,
     color="black",
@@ -133,7 +133,7 @@ fig.suptitle(
 fig.tight_layout()
 fig.savefig(PNG / "radar_daily_lodz.png", dpi=200)
 # %%
-fig = plot_radar(dt_ord=belgrade, theta=theta)
+fig = plot_radar(dt_ord=belgrade, theta=theta, distance=DISTANCE)
 
 fig.suptitle(
     t="Livability for different times of the day Zamunski Kej\n(before the intervention)",
@@ -147,7 +147,7 @@ fig.tight_layout()
 fig.savefig(PNG / "radar_belgrade.png", dpi=200)
 for key, value in belgrade.items():
     tmp = {key: value}
-    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig = plot_radar(dt_ord=tmp, theta=theta, distance=DISTANCE)
     fig.tight_layout()
     fig.savefig(PNG / f"radar_belgrade_{key.lower()}.png", dpi=200)
 
@@ -157,11 +157,11 @@ for factor in LIVABILITY:
         [belgrade[time_day]["before"][factor].mean() for time_day in belgrade]
     )
 
-fig = plot_radar(dt_ord=belgrade_all, theta=theta)
+fig = plot_radar(dt_ord=belgrade_all, theta=theta, distance=DISTANCE)
 fig.tight_layout()
 fig.savefig(PNG / "radar_daily_belgrade.png", dpi=200)
 # %%
-fig = plot_radar(dt_ord=gladsaxe, theta=theta)
+fig = plot_radar(dt_ord=gladsaxe, theta=theta, distance=DISTANCE)
 
 fig.suptitle(
     t="Livability for different times of the day Pileparken 6",
@@ -176,7 +176,7 @@ fig.savefig(PNG / "radar_gladsaxe_compare.png", dpi=200)
 
 for key, value in gladsaxe.items():
     tmp = {key: value}
-    fig = plot_radar(dt_ord=tmp, theta=theta)
+    fig = plot_radar(dt_ord=tmp, theta=theta, distance=DISTANCE)
     fig.tight_layout()
     fig.savefig(PNG / f"radar_gladsaxe_{key.lower()}_compare.png", dpi=200)
 
@@ -189,7 +189,7 @@ for factor in LIVABILITY:
         [gladsaxe[time_day]["after"][factor].mean() for time_day in gladsaxe]
     )
 
-fig = plot_radar(dt_ord=gladsaxe_all, theta=theta)
+fig = plot_radar(dt_ord=gladsaxe_all, theta=theta, distance=DISTANCE)
 fig.tight_layout()
 fig.savefig(PNG / "radar_daily_gladsaxe_compare.png", dpi=200)
 # %%
