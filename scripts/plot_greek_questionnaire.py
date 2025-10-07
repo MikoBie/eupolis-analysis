@@ -15,7 +15,16 @@ from eupolis.config import DISTANCE
 
 # %%
 GREEK = PNG / "mikrolimano_questionnaire"
-df = pd.read_excel(PROC / "questionnaire_pireus.xlsx")
+df1 = pd.read_excel(PROC / "questionnaire_pireus.xlsx")
+df1["condition"] = "before"
+df2 = pd.read_excel(PROC / "questionnaire_pireus_after.xlsx").rename(
+    columns={"Gender": "Sex"}
+)
+df2["condition"] = "after"
+df = pd.concat([df1, df2], ignore_index=True)
+
+
+# %%
 df["Gender"] = df["Sex"].apply(lambda x: x.strip().lower())
 df[df.columns[15]] = df[df.columns[15]].apply(
     lambda x: [item.strip() for item in x.split(",")] if isinstance(x, str) else []
@@ -76,97 +85,161 @@ df = df.assign(
 
 # %%
 ## Gender
-df.groupby("Gender").agg(sex_count=pd.NamedAgg(column="Age", aggfunc="count"))
+df.groupby(["Gender", "condition"]).agg(
+    sex_count=pd.NamedAgg(column="Age", aggfunc="count")
+).reset_index()
 
 # %%
 ## Age
 gdf = (
-    df.groupby(["Gender", "Age"])
+    df.groupby(["Gender", "Age", "condition"])
     .agg(count=pd.NamedAgg(column="Age", aggfunc="count"))
     .reset_index()
 )
 
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(GREEK / "age.png", dpi=200, bbox_inches="tight")
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(GREEK / f"age_{cond}.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Martial Status
 gdf = (
-    df.groupby(["Gender", "Martial status"])
+    df.groupby(["Gender", "Martial status", "condition"])
     .agg(count=pd.NamedAgg(column="Martial status", aggfunc="count"))
     .reset_index()
 )
 
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(GREEK / "martial_status.png", dpi=200, bbox_inches="tight")
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(GREEK / f"martial_status_{cond}.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Household income compare to the country average
-gdf = df.iloc[:, [101, 4]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "household_income_compare_to_the_country_average.png",
-    dpi=200,
-    bbox_inches="tight",
+gdf = (
+    df.iloc[:, [101, 102, 4]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(
+        GREEK / f"household_income_compare_to_the_country_average_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## Education level
-gdf = df.iloc[:, [101, 5]].groupby("Gender").value_counts().reset_index()
+gdf = (
+    df.iloc[:, [101, 102, 5]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
+)
 
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(GREEK / "education_level.png", dpi=200, bbox_inches="tight")
+for (
+    cond,
+    tdf,
+) in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(GREEK / f"education_level_{cond}.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Type of housing
-gdf = df.iloc[:, [101, 6]].groupby("Gender").value_counts().reset_index()
+gdf = (
+    df.iloc[:, [101, 102, 6]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
+)
 
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(GREEK / "type_housing.png", dpi=200, bbox_inches="tight")
+for (
+    cond,
+    tdf,
+) in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(GREEK / f"type_housing_{cond}.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Number of members in the household
-gdf = df.iloc[:, [101, 7]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "number_of_members_in_the_household.png", dpi=200, bbox_inches="tight"
+gdf = (
+    df.iloc[:, [101, 102, 7]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(
+        GREEK / f"number_of_members_in_the_household_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## Do you consider yourself to be a part of minority
-df.iloc[:, [101, 8]].groupby("Gender").value_counts().reset_index()
+df.iloc[:, [101, 102, 8]].groupby(["Gender", "condition"]).value_counts().reset_index()
 
 # %%
 ## Disability -- The only answer seems to be a joke
-gdf = df.iloc[:, [101, 10]].groupby("Gender").value_counts().reset_index()
+gdf = (
+    df.iloc[:, [101, 102, 10]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
+)
 
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(GREEK / "disability.png", dpi=200, bbox_inches="tight")
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(GREEK / f"disability_{cond}.png", dpi=200, bbox_inches="tight")
 # %%
 ## Employment status
-gdf = df.iloc[:, [101, 12]].groupby("Gender").value_counts().reset_index()
+gdf = (
+    df.iloc[:, [101, 102, 12]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
+)
 
-fig = plot_wearables_barplot(gdf=gdf, wrap_length=10, font_size=8)
-fig.savefig(GREEK / "employment_status.png", dpi=200, bbox_inches="tight")
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(
+        gdf=tdf.drop("condition", axis=1), wrap_length=10, font_size=8
+    )
+    fig.savefig(GREEK / f"employment_status_{cond}.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## What is the number of people under 18 in your household?
-gdf = df.iloc[:, [101, 13]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "what_is_the_number_of_people_under_18_in_your_household.png",
-    dpi=200,
-    bbox_inches="tight",
+gdf = (
+    df.iloc[:, [101, 102, 13]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(
+        GREEK / f"what_is_the_number_of_people_under_18_in_your_household_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## How many children under 3 do you have?
-gdf = df.iloc[:, [101, 14]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "how_many_children_under_3_do_you_have.png", dpi=200, bbox_inches="tight"
+gdf = (
+    df.iloc[:, [101, 102, 14]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(
+        GREEK / f"how_many_children_under_3_do_you_have_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 
 # %%
 ## Non-communicable diseases the numbers are off but not important in my opinion.
