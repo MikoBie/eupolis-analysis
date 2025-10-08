@@ -243,245 +243,223 @@ for cond, tdf in gdf.groupby("condition"):
 
 # %%
 ## Non-communicable diseases the numbers are off but not important in my opinion.
-df_15 = (
-    prepare_kids_data(df, 15)
-    .rename(columns={"female": "Female", "male": "Male"})
-    .fillna(0)
-)
-df_15.loc[:, "names"] = df_15.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_15, labels_size=6, female_n=16, male_n=8)
-fig.legend(
-    ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
-)
-fig.savefig(GREEK / "non_communicable_diseases.png", dpi=200, bbox_inches="tight")
+for cond, tdf in df.groupby("condition"):
+    df_15 = (
+        prepare_kids_data(tdf, 15)
+        .rename(columns={"female": "Female", "male": "Male"})
+        .fillna(0)
+    )
+    df_15.loc[:, "names"] = df_15.loc[:, "names"].apply(
+        lambda x: "\n".join(wrap(x, 30))
+    )
+    fig = plot_kids_barhplot(
+        df_15,
+        labels_size=6,
+        female_n=tdf.query("Sex == 'Female'").shape[0],
+        male_n=tdf.query("Sex == 'Male'").shape[0],
+    )
+    fig.legend(
+        ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
+    )
+    fig.savefig(
+        GREEK / f"non_communicable_diseases_{cond}.png", dpi=200, bbox_inches="tight"
+    )
 
 # %%
 ## Do you smoke?
-gdf = df.iloc[:, [101, 16]].groupby("Gender").value_counts().reset_index()
+gdf = (
+    df.iloc[:, [102, 101, 16]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
+)
 
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(GREEK / "do_you_smoke.png", dpi=200, bbox_inches="tight")
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(GREEK / f"do_you_smoke_{cond}.png", dpi=200, bbox_inches="tight")
 # %%
 ## How far away do you live from the demo site?
-gdf = df.iloc[:, [101, 17]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "how_far_away_do_you_live_from_the_demo_site.png",
-    dpi=200,
-    bbox_inches="tight",
+gdf = (
+    df.iloc[:, [101, 102, 17]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for (
+    cond,
+    tdf,
+) in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(
+        GREEK / f"how_far_away_do_you_live_from_the_demo_site_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## When do you usually visit the demo site?
-gdf = df.iloc[:, [101, 18]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "how_far_away_do_you_live_from_the_demo_site.png",
-    dpi=200,
-    bbox_inches="tight",
+gdf = (
+    df.iloc[:, [101, 102, 18]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(
+        GREEK / f"how_far_away_do_you_live_from_the_demo_site_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## How often do you usually visit the demo site?
-gdf = df.iloc[:, [101, 19]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf, font_size=8)
-fig.savefig(
-    GREEK / "how_often_do_you_usually_visit_the_demo_site.png",
-    dpi=200,
-    bbox_inches="tight",
+gdf = (
+    df.iloc[:, [101, 102, 19]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1), font_size=8)
+    fig.savefig(
+        GREEK / f"how_often_do_you_usually_visit_the_demo_site_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## What time during the day you usually visit the demo site?
-df_20 = (
-    prepare_kids_data(df, 20)
-    .rename(columns={"female": "Female", "male": "Male"})
-    .fillna(0)
-)
-df_20.loc[:, "names"] = df_20.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_20, labels_size=6, female_n=16, male_n=8)
-fig.legend(
-    ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
-)
-fig.savefig(
-    GREEK / "what_time_during_the_day_you_usally_visit_the_demo_site.png",
-    dpi=200,
-    bbox_inches="tight",
-)
+for cond, tdf in df.groupby("condition"):
+    df_20 = (
+        prepare_kids_data(tdf, 20)
+        .rename(columns={"female": "Female", "male": "Male"})
+        .fillna(0)
+    )
+    df_20.loc[:, "names"] = df_20.loc[:, "names"].apply(
+        lambda x: "\n".join(wrap(x, 30))
+    )
+    fig = plot_kids_barhplot(
+        df_20,
+        labels_size=6,
+        female_n=tdf.query("Sex == 'Female'").shape[0],
+        male_n=tdf.query("Sex == 'Male'").shape[0],
+    )
+    fig.legend(
+        ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
+    )
+    fig.savefig(
+        GREEK / f"what_time_during_the_day_you_usally_visit_the_demo_site_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## How much time on average do you spend in the demo site per visit?
-gdf = df.iloc[:, [101, 21]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "how_much_time_on_average_do_spend_in_the_demo_site_per_visit.png",
-    dpi=200,
-    bbox_inches="tight",
+gdf = (
+    df.iloc[:, [101, 102, 21]]
+    .groupby(["Gender", "condition"])
+    .value_counts()
+    .reset_index()
 )
+
+for cond, tdf in gdf.groupby("condition"):
+    fig = plot_wearables_barplot(gdf=tdf.drop("condition", axis=1))
+    fig.savefig(
+        GREEK
+        / f"how_much_time_on_average_do_spend_in_the_demo_site_per_visit_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## What do you usually do during the visits to the demo site?
-df_22 = (
-    prepare_kids_data(df, 22)
-    .rename(columns={"female": "Female", "male": "Male"})
-    .fillna(0)
-)
-df_22.loc[:, "names"] = df_22.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_22, labels_size=6, female_n=16, male_n=8)
-fig.legend(
-    ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
-)
-fig.savefig(
-    GREEK / "what_do_you_usally_do_during_the_visits_to_the_demo_site.png",
-    dpi=200,
-    bbox_inches="tight",
-)
+for cond, tdf in df.groupby("condition"):
+    df_22 = (
+        prepare_kids_data(tdf, 22)
+        .rename(columns={"female": "Female", "male": "Male"})
+        .fillna(0)
+    )
+    df_22.loc[:, "names"] = df_22.loc[:, "names"].apply(
+        lambda x: "\n".join(wrap(x, 30))
+    )
+    fig = plot_kids_barhplot(
+        df_22,
+        labels_size=6,
+        female_n=tdf.query("Sex == 'Female'").shape[0],
+        male_n=tdf.query("Sex == 'Male'").shape[0],
+    )
+    fig.legend(
+        ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
+    )
+    fig.savefig(
+        GREEK / f"what_do_you_usally_do_during_the_visits_to_the_demo_site_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## What urban furniture do you usually use during your visits to the demo site?
-df_23 = (
-    prepare_kids_data(df, 23)
-    .rename(columns={"female": "Female", "male": "Male"})
-    .fillna(0)
-)
-df_23.loc[:, "names"] = df_23.loc[:, "names"].apply(lambda x: "\n".join(wrap(x, 30)))
-fig = plot_kids_barhplot(df_23, labels_size=6, female_n=16, male_n=8)
-fig.legend(
-    ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
-)
-fig.savefig(
-    GREEK
-    / "what_urban_furniture_do_you_usually_use_during_your_visits_to_the_demo_site.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## During the last 7 days, on how many days did you do vigorus physical activities?
-gdf = df.iloc[:, [101, 24]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK
-    / "during_the_last_7_days_on_how_many_days_did_you_do_vigorus_physical_activities.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## How much time did you usually spend doing vigorous physical activities on one of these days?
-gdf = df.iloc[:, [101, 25]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK
-    / "how_much_time_did_you_usually_spend_doing_vigorous_physical_activities_on_one_of_those_days.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## During the last 7 days, on how many daysi did you do moderate physical activies?
-gdf = df.iloc[:, [101, 26]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK
-    / "during_the_last_7_days_on_how_many_days_did_you_do_moderte_physical_activities.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## How much time did you usually spend doing moderate physical activities on one of these days?
-gdf = df.iloc[:, [101, 27]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK
-    / "how_much_time_did_you_usually_spend_doing_moderate_physical_activities_on_one_of_those_days.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## During the last 7 days, on how many days did you walk for at least 10 minutes at a time?
-gdf = df.iloc[:, [101, 28]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK
-    / "during_the_last_7_days_on_how_many_days_did_you_walk_for_at_least_10_minutes_at_a_time.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## How much time did you usually spend walking on one of these days?
-gdf = df.iloc[:, [101, 29]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK / "how_time_did_you_usually_spend_walking_on_one_of_these_days.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## During the last 7 days, on how many days did you pend sitting one of these days?
-gdf = df.iloc[:, [101, 30]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf)
-fig.savefig(
-    GREEK
-    / "during_the_last_7_days_on_how_many_days_did_you_spend_sitting_on_one_of_these_days.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-
-# %%
-## At home, how much green space (trees, grasses, flowers, etc.) can you see through the following window(s)?
-gdf = df.iloc[:, [101, 31]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf, font_size=7, wrap_length=20)
-fig.savefig(
-    GREEK / "at_home_how_much_green_space_can_you_see_though_the_following_windows.png",
-    dpi=200,
-    bbox_inches="tight",
-)
-# %%
-## How often (during the day) do you look out through the window(s)?
-gdf = df.iloc[:, [101, 32]].groupby("Gender").value_counts().reset_index()
-
-fig = plot_wearables_barplot(gdf=gdf, wrap_length=15, font_size=7)
-fig.savefig(
-    GREEK / "how_often_during_the_day_do_you_look_out_through_the_windows.png",
-    dpi=200,
-    bbox_inches="tight",
-)
+for (
+    cond,
+    tdf,
+) in df.groupby("condition"):
+    df_23 = (
+        prepare_kids_data(tdf, 23)
+        .rename(columns={"female": "Female", "male": "Male"})
+        .fillna(0)
+    )
+    df_23.loc[:, "names"] = df_23.loc[:, "names"].apply(
+        lambda x: "\n".join(wrap(x, 30))
+    )
+    fig = plot_kids_barhplot(
+        df_23,
+        labels_size=6,
+        female_n=tdf.query("Sex == 'Female'").shape[0],
+        male_n=tdf.query("Sex == 'Male'").shape[0],
+    )
+    fig.legend(
+        ncol=2, loc="center", bbox_to_anchor=(0.5, -0.03), fancybox=True, shadow=True
+    )
+    fig.savefig(
+        GREEK
+        / f"what_urban_furniture_do_you_usually_use_during_your_visits_to_the_demo_site_{cond}.png",
+        dpi=200,
+        bbox_inches="tight",
+    )
 # %%
 ## Quality of life
-gdf = df.copy()
-gdf.insert(2, "2 sex", gdf["Gender"])
-fig = plot_likert_barplot(df=gdf, starting_column=34, n_columns=2)
-fig.savefig(GREEK / "quality_of_life.png", dpi=200, bbox_inches="tight")
+for cond, tdf in df.groupby("condition"):
+    gdf = tdf.copy()
+    gdf.insert(2, "2 sex", gdf["Gender"])
+    fig = plot_likert_barplot(df=gdf, starting_column=34, n_columns=2)
+    fig.savefig(GREEK / f"quality_of_life_{cond}.png", dpi=200, bbox_inches="tight")
 
 # %%
 ## Quality of life
-gdf = df.copy()
-gdf.insert(2, "2 sex", gdf["Gender"])
-fig = plot_likert_barplot(
-    df=gdf, starting_column=36, n_columns=3, legend=False, max_tick=5
-)
-fig.savefig(GREEK / "quality_of_life_1.png", dpi=200, bbox_inches="tight")
-fig2 = plot_likert_barplot(
-    df=gdf, starting_column=39, n_columns=3, legend=False, max_tick=5
-)
-fig2.savefig(GREEK / "quality_of_life_2.png", dpi=200, bbox_inches="tight")
-fig3 = plot_likert_barplot(df=gdf, starting_column=42, n_columns=1, max_tick=5)
-fig3.savefig(GREEK / "quality_of_life_3.png", dpi=200, bbox_inches="tight")
+for cond, tdf in df.groupby("condition"):
+    gdf = tdf.copy()
+    gdf.insert(2, "2 sex", gdf["Gender"])
+    fig = plot_likert_barplot(
+        df=gdf, starting_column=36, n_columns=3, legend=False, max_tick=5
+    )
+    fig.savefig(GREEK / f"quality_of_life_1_{cond}.png", dpi=200, bbox_inches="tight")
+    fig2 = plot_likert_barplot(
+        df=gdf, starting_column=39, n_columns=3, legend=False, max_tick=5
+    )
+    fig2.savefig(GREEK / f"quality_of_life_2_{tdf}.png", dpi=200, bbox_inches="tight")
+    fig3 = plot_likert_barplot(df=gdf, starting_column=42, n_columns=1, max_tick=5)
+    fig3.savefig(GREEK / f"quality_of_life_3_{cond}.png", dpi=200, bbox_inches="tight")
 # %%
-gdf = df.copy()
-gdf.insert(2, "2 sex", gdf["Gender"])
-fig = plot_likert_barplot(
-    df=gdf, starting_column=69, n_columns=3, legend=False, max_tick=5
-)
-fig.savefig(GREEK / "expectations.png", dpi=200, bbox_inches="tight")
-fig = plot_likert_barplot(
-    df=gdf, starting_column=72, n_columns=2, legend=True, max_tick=5
-)
-fig.savefig(GREEK / "expectations_2.png", dpi=200, bbox_inches="tight")
+## Expectations
+for cond, tdf in df.groupby("condition"):
+    gdf = tdf.copy()
+    gdf.insert(2, "2 sex", gdf["Gender"])
+    fig = plot_likert_barplot(
+        df=gdf, starting_column=69, n_columns=3, legend=False, max_tick=5
+    )
+    fig.savefig(GREEK / f"expectations_{cond}.png", dpi=200, bbox_inches="tight")
+    fig = plot_likert_barplot(
+        df=gdf, starting_column=72, n_columns=2, legend=True, max_tick=5
+    )
+    fig.savefig(GREEK / f"expectations_2_{cond}.png", dpi=200, bbox_inches="tight")
 # %%
 ## LIVABILITY
 LIVABILITY = {
@@ -496,7 +474,12 @@ LIVABILITY = {
 pireus_all = defaultdict(lambda: defaultdict(defaultdict))
 
 for key, value in LIVABILITY.items():
-    pireus_all[""]["before"][key] = df.loc[:, value]
+    pireus_all[""]["before"][key] = pd.Series(
+        df.query("condition == 'before'").loc[:, value]
+    )
+    pireus_all[""]["after"][key] = pd.Series(
+        df.query("condition == 'after'").loc[:, value]
+    )
 
 theta = radar_factory(len(LIVABILITY), frame="polygon")
 fig = plot_radar(
