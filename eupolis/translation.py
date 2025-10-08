@@ -237,6 +237,7 @@ QUESTIONNAIRE_A = {
     "Κάνω βόλτα με κατοικίδιο (σκύλο)": "Walk a dog",
     "Ασκούμαι, τρέχω ή κάνω κάποιο άθλημα": "Exercise, go for a run, play sports",
     "Κάνω βόλτα με Ποδήλατο": "Go for a bike ride",
+    "Περνώ χρόνο με την οικογένειά μου / τα παιδιά μου, Άλλο": "Spend time with family/children",
     "Παρατηρώ τη φύση": "Observe nature",
     "Παιδικές Χαρές": "Playground",
     "Παγκάκια": "Benches",
